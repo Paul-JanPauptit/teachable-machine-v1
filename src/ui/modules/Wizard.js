@@ -432,9 +432,9 @@ this.machine = document.querySelector('.machine');
 this.textContainer = this.bar.querySelector('.wizard__text-inner');
 this.soundButton = this.bar.querySelector('.wizard__sound-button');
 this.soundIcon = this.soundButton.querySelector('.wizard__sound-icon');
-this.skipButton = this.bar.querySelector('.wizard__skip-button');
 
-this.skipButton.addEventListener('click', this.skip.bind(this));
+
+
 this.soundButton.addEventListener('click', this.toggleSound.bind(this));
 
 this.classTrainedEvent = this.classTrained.bind(this);
@@ -702,7 +702,6 @@ skip(event) {
     this.stopAudioTimer();
     this.audio.pause();
     this.clear();
-    this.skipButton.style.display = 'none';
     this.soundButton.style.display = 'none';
     window.removeEventListener('class-trained', this.classTrainedEvent);
     setTimeout(() => {
