@@ -31,19 +31,22 @@ class GIFOutput {
 			this.gifCanvas = new GifCanvas();
 		}
 
+		// Bunny
+		this.defaultGifs.push({
+			still: 'https://media0.giphy.com/media/I3BLTIP5Gv6h2/giphy-downsized_s.gif',
+			gif: 'https://media0.giphy.com/media/I3BLTIP5Gv6h2/200w.gif'
+		});
+
+		// Cat
 		this.defaultGifs.push({
 			still: 'https://media1.giphy.com/media/vFKqnCdLPNOKc/giphy-downsized_s.gif',
 			gif: 'https://media1.giphy.com/media/vFKqnCdLPNOKc/200w.gif'
 		});
 
+		// Dog
 		this.defaultGifs.push({
 			still: 'https://media3.giphy.com/media/14ivBLRRRmyQw0/giphy-downsized_s.gif',
 			gif: 'https://media3.giphy.com/media/14ivBLRRRmyQw0/200w.gif'
-		});
-
-		this.defaultGifs.push({
-			still: 'https://media0.giphy.com/media/I3BLTIP5Gv6h2/giphy-downsized_s.gif',
-			gif: 'https://media0.giphy.com/media/I3BLTIP5Gv6h2/200w.gif'
 		});
 
 		this.edit = document.createElement('div');
