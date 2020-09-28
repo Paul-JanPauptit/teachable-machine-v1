@@ -14,205 +14,232 @@
 
 /* eslint-disable consistent-return, callback-return, no-case-declarations */
 import GLOBALS from './../../config.js';
-import DummyAudio from '../components/DummyAudio.js';
 import TweenLite from 'gsap';
-
 
 class Wizard {
     constructor() {
 
-        this.sections = {
-            introduction: "1. Interface introduction",
-            firstDataset: "2. Teaching first dataset",
-            catAndDog: "3. Teaching cat and dog dataset",
-            validation: "4. Validation of datasets"
-        }
+        this.steps = [];
+        this.steps.push({ // 0
+            startTime: 0,
+            stopTime: 10.4,
+            triggers: [
+            {
+                startTime: 0,
+                stopTime: 3.7,
+                event: () => {
+                    this.setText('This experiment lets you explore how machine learning works.');
 
-        this.sections = [];
+                }
+            },
+            {
+                startTime: 4.5,
+                stopTime: 10.4,
+                event: () => {
+                    this.setText('You can teach the machine using your camera, and make it respond in fun ways.');
+                }
+            }
+            ]
+        });
 
-        // Section 1 - Introduction
-        this.sections.push({
-            title: this.sections.introduction,
-            steps: [
-                {   
-                    text: 'This experiment lets you explore how machine learning works.',
-                },
-                {   text: 'You can teach the machine using your camera.',
-                    execute: () => {
-                        if (localStorage.getItem('webcam_status') === null) {
-                            this.play("cameraInit");
-                            this.webcamEvent = this.webcamStatus.bind(this);
-                            window.addEventListener('webcam-status', this.webcamEvent);
-                        } else if (localStorage.getItem('webcam_status') === 'granted') {
-                            GLOBALS.camInput.start();
-                            this.play("cameraStart");
-                        } else if (localStorage.getItem('webcam_status') === 'denied') {
-                            this.play("cameraDenied");
-                        }
+        this.steps.push({ // 1
+            startTime: 10.5,
+            stopTime: 16,
+            waitForEvent: true,
+            triggers: [
+            {
+                startTime: 10.5,
+                stopTime: 16,
+                event: () => {
+                    /*eslint-disable */
+                    if (!GLOBALS.browserUtils.isMobile && !GLOBALS.isCamGranted) {
+                        this.setText('First, click allow to turn on your camera.');
+                    }else {
+                        this.play(2);
                     }
-                },
-                {   execute: () => {
-                        /*eslint-disable */
-                        if (!GLOBALS.browserUtils.isMobile && !GLOBALS.isCamGranted) {
-                            this.setText('First, click allow to turn on your camera.', this.sections.introduction);
-                        }else {
-                            this.play('cameraStart');
-                        }
-                        /* eslint-enable */
-                    }
-                },
-                {   
-                    name: 'cameraStart',
-                    execute: () => {
-                        GLOBALS.camInput.start();
-                    }
-                },
-                {
-                    duration: 20.6 - 16.3,
-                    text: 'Here is your input. You should see yourself.',
-                    execute: () => {
-                        GLOBALS.inputSection.enable();
-                        GLOBALS.inputSection.highlight();
-    
-                        GLOBALS.learningSection.dim();
-                        GLOBALS.outputSection.dim();                        
-                    }
-                },
-                {
-                    duration: 1,
-                    text: 'Here are three classes: green, purple, orange.',
-                    execute: () => {
-                        GLOBALS.inputSection.dehighlight();
-                        GLOBALS.inputSection.dim();
-                        GLOBALS.learningSection.undim();
-                        GLOBALS.outputSection.dim();
-                        if (GLOBALS.browserUtils.isMobile) {
-                            TweenLite.to(window, 0, {scrollTo: 385});
-                        }
-    
-                    }                    
-                },
-                {
-                    duration: 1,
-                    execute: () => {
-                        GLOBALS.learningSection.highlightClass(0);
-                    }
-                },
-                {
-                    duration: 1,
-                    execute: () => {
-                        GLOBALS.learningSection.dehighlightClass(0);
-                        GLOBALS.learningSection.highlightClass(1);
-                    }
-                },
-                {
-                    duration: 1.5,
-                    execute: () => {
-                        GLOBALS.learningSection.dehighlightClass(0);
-                        GLOBALS.learningSection.dehighlightClass(1);
-                        GLOBALS.learningSection.highlightClass(2);
-                    }
-                },
-                {
-                    duration: 0.1,
-                    execute: () => {
-                        GLOBALS.learningSection.dehighlightClass(2);
-                    }
-                },
-                {
-                    duration: 4,
-                    text: "Here is the output, where the machine responds.",
-                    execute: () => {
-                        if (GLOBALS.browserUtils.isMobile) {
-                            TweenLite.to(window, 0, {scrollTo: 660});
-                        }
-                        GLOBALS.inputSection.dim();
-                        GLOBALS.learningSection.dim();
-                        GLOBALS.outputSection.undim();
-                        GLOBALS.outputSection.highlight();
-                    }
-                },
-                {
-                    text: "It’s set to respond with one of these GIFs. You can also make it respond with sounds or speech.",
-                    execute: () => {
-                        GLOBALS.outputSection.dehighlight();
-                    }
-                },
-                {
-                    duration: 42.2 - 36.8,
-                    text: "First, we’re going to teach it to respond with the rabbit GIF.",
-                    execute: () => {
-                        GLOBALS.inputSection.undim();
-                        GLOBALS.inputSection.enable();
-                        GLOBALS.learningSection.undim();
-                        GLOBALS.learningSection.enable();
-                        GLOBALS.outputSection.undim();
+                    /* eslint-enable */
+                }
+            },
+            {
+                startTime: 12,
+                stopTime: 16,
+                event: () => {
+                    GLOBALS.camInput.start();
+                }
+            }
+            ]
+        });
+
+
+        this.steps.push({ // 2
+            startTime: 16.3,
+            stopTime: 49,
+            waitForEvent: true,
+            triggers: [
+            {
+                startTime: 16.3,
+                stopTime: 20.6,
+                event: () => {
+                    this.setText('Here is your input. You should see yourself.');
+                    GLOBALS.inputSection.enable();
+                    GLOBALS.inputSection.highlight();
+
+                    GLOBALS.learningSection.dim();
+                    GLOBALS.outputSection.dim();
+                }
+
+            },
+            {
+                startTime: 20.7,
+                stopTime: 25.6,
+                event: () => {
+                    this.setText('Here are three classes: green, purple, orange.');
+                    GLOBALS.inputSection.dehighlight();
+                    GLOBALS.inputSection.dim();
+                    GLOBALS.learningSection.undim();
+                    GLOBALS.outputSection.dim();
+                    if (GLOBALS.browserUtils.isMobile) {
+                        TweenLite.to(window, 0, {scrollTo: 385});
                     }
                 }
 
-
+            },
+            {
+                startTime: 22.7,
+                stopTime: 23.4,
+                event: () => {
+                    GLOBALS.learningSection.highlightClass(0);
+                }
+            },
+            {
+                startTime: 23.4,
+                stopTime: 24,
+                event: () => {
+                    GLOBALS.learningSection.dehighlightClass(0);
+                    GLOBALS.learningSection.highlightClass(1);
+                }
+            },
+            {
+                startTime: 24,
+                stopTime: 25.6,
+                event: () => {
+                    GLOBALS.learningSection.dehighlightClass(0);
+                    GLOBALS.learningSection.dehighlightClass(1);
+                    GLOBALS.learningSection.highlightClass(2);
+                }
+            },
+            {
+                startTime: 25.6,
+                stopTime: 25.7,
+                event: () => {
+                    GLOBALS.learningSection.dehighlightClass(2);
+                }
+            },
+            {
+                startTime: 25.7,
+                stopTime: 29.7,
+                event: () => {
+                    this.setText('Here is the output, where the machine responds.');
+                    if (GLOBALS.browserUtils.isMobile) {
+                        TweenLite.to(window, 0, {scrollTo: 660});
+                    }
+                    GLOBALS.inputSection.dim();
+                    GLOBALS.learningSection.dim();
+                    GLOBALS.outputSection.undim();
+                    GLOBALS.outputSection.highlight();
+                }
+            },
+            {
+                startTime: 29.8,
+                stopTime: 36.8,
+                event: () => {
+                    GLOBALS.outputSection.dehighlight();
+                    this.setText('It’s set to respond with one of these GIFs. You can also make it respond with sounds or speech.');
+                }
+            },
+            {
+                startTime: 36.8,
+                stopTime: 42.2,
+                event: () => {
+                    GLOBALS.inputSection.undim();
+                    GLOBALS.inputSection.enable();
+                    GLOBALS.learningSection.undim();
+                    GLOBALS.learningSection.enable();
+                    GLOBALS.outputSection.undim();
+                    this.setText('First, we’re going to teach it to respond with the cat GIF when you do something.');
+                }
+            },
+            {
+                startTime: 42.3,
+                stopTime: 49,
+                event: () => {
+                    this.setText('Do something like put up your hand (see example above) and hold this green button for a couple seconds.');
+                    if (GLOBALS.browserUtils.isMobile) {
+                        TweenLite.to(window, 0, {scrollTo: 175});
+                    }
+                }
+            },
+            {
+                startTime: 44.8,
+                stopTime: 49,
+                event: () => {
+                    GLOBALS.inputSection.showGif(0);
+                }
+            },
+            {
+                startTime: 46.3,
+                stopTime: 49,
+                event: () => {
+                    window.addEventListener('class-trained', this.classTrainedEvent);
+                    GLOBALS.learningSection.enableClass(0);
+                    GLOBALS.learningSection.highlightClass(0);
+                }
+            }
             ]
         });
 
-        // Section 2 - Teaching first dataset
-        this.sections.push({
-            title: this.sections.firstDataset,
-            steps: [
-                {   
-                    text: "Do something like put up your hand (see example above) and hold this green button for a couple seconds.",
-                    execute: () => {
-                        if (GLOBALS.browserUtils.isMobile) {
-                            TweenLite.to(window, 0, {scrollTo: 175});
-                        }
-                    }
-                },
-                {
-                    duration: 4.1,
-                    execute: () => GLOBALS.inputSection.showGif(0),
-                },
-                {
-                    duration: 2.7,
-                    execute: () => {
-                        window.addEventListener('class-trained', this.classTrainedEvent);
-                        GLOBALS.learningSection.enableClass(0);
-                        GLOBALS.learningSection.highlightClass(0);
-                    }
-                },
-                {
-                    name: "greenTrained",
-                    duration: 53.8 - 49.6,
-                    text: 'You should now see the green bar and the rabbit GIF.'
-                },
-                {
-                    duration: 58.6 - 53.9,
-                    text: 'But if you move around, you’ll see that they’re always showing no matter what.'
-                },
-                {
-                    duration: 58.6 - 55.2,
-                    execute: () => GLOBALS.inputSection.showGif(1)
-                },
-                {
-                    text: "That’s because the machine is looking at your input, and picking which class looks most similar.",
-                    execute: () => GLOBALS.inputSection.hideGif(1)
-                },
-                {   text: 'But since you’ve only trained the green class, it always picks that one. That’s why you need to teach it a second class.' }
-            ]
-        });
 
-    
-/*
-
-
-                    
-
-
-
-
-
-
-
-
-        name: "greenTrained",
+this.steps.push({ // 3
+    startTime: 49.599999999999994,
+    stopTime: 78.8,
+    waitForEvent: true,
+    triggers: [
+    {
+        startTime: 49.599999999999994,
+        stopTime: 53.8,
+        event: () => {
+            this.setText('You should now see the green bar and the cat GIF.');
+        }
+    },
+    {
+        startTime: 53.9,
+        stopTime: 58.599999999999994,
+        event: () => {
+            this.setText('But if you move around, you’ll see that they’re always showing no matter what.');
+        }
+    },
+    {
+        startTime: 55.199999999999996,
+        stopTime: 58.599999999999994,
+        event: () => {
+            GLOBALS.inputSection.showGif(1);
+        }
+    },
+    {
+        startTime: 58.8,
+        stopTime: 64.6,
+        event: () => {
+            GLOBALS.inputSection.hideGif(1);
+            this.setText('That’s because the machine is looking at your input, and picking which class looks most similar.');
+        }
+    },
+    {
+        startTime: 64.8,
+        stopTime: 72.2,
+        event: () => {
+            this.setText('But since you’ve only trained the green class, it always picks that one. That’s why you need to teach it a second class.');
+        }
+    },
     {
         startTime: 72.39999999999999,
         stopTime: 78.8,
@@ -240,13 +267,12 @@ class Wizard {
 });
 
 
-this.steps.push({
+this.steps.push({ // 4
     startTime: 80.8,
     stopTime: 92.8,
     waitForEvent: true,
     triggers: [
     {
-        name: "purpleTrained"
         startTime: 83.39999999999999,
         stopTime: 92.8,
         event: () => {
@@ -275,8 +301,7 @@ this.steps.push({
 });
 
 
-this.steps.push({
-    name: "classTrained"
+this.steps.push({ // 5
     startTime: 93.2,
     stopTime: 120.89999999999999,
     waitForEvent: true,
@@ -354,8 +379,7 @@ this.steps.push({
 });
 
 
-this.steps.push({
-    name: "trainMore",
+this.steps.push({ // 6
     startTime: 131,
     stopTime: 138.8,
     waitForEvent: true,
@@ -370,13 +394,12 @@ this.steps.push({
     ]
 });
 
-this.steps.push({
+this.steps.push({ // 7
     startTime: 125.5,
     stopTime: 130.8,
     waitForEvent: true,
     triggers: [
     {
-        name: "cameraDenied"
         startTime: 125.5,
         stopTime: 130.8,
         event: () => {
@@ -386,20 +409,19 @@ this.steps.push({
     }
     ]
 });
-*/
 
 this.wizardRunning = false;
-this.sectionIndex = 0;
-this.stepIndex = 0;
+this.currentIndex = 0;
 
 this.timer = document.querySelector('.wizard__timer');
 this.timerFill = this.timer.querySelector('.wizard__timer-fill');
 this.percentage = 0;
-this.stepStartTime = 0;
+this.duration = 0;
+this.baseTime = 0;
 this.currentTime = 0;
 
 this.stopTime = 0;
-this.audio = new DummyAudio();
+this.audio = new Audio();
 this.loadedEvent = this.loaded.bind(this);
 this.audio.addEventListener('canplaythrough', this.loadedEvent);
 this.audio.src = 'assets/wizard/voice-over.mp3';
@@ -407,14 +429,13 @@ this.audio.src = 'assets/wizard/voice-over.mp3';
 this.wizardWrapper = document.querySelector('.wizard__wrapper');
 this.bar = document.querySelector('#wizard');
 this.machine = document.querySelector('.machine');
-this.titleContainer = this.bar.querySelector('.wizard__text-title');
 this.textContainer = this.bar.querySelector('.wizard__text-inner');
 this.soundButton = this.bar.querySelector('.wizard__sound-button');
 this.soundIcon = this.soundButton.querySelector('.wizard__sound-icon');
-this.soundButton.addEventListener('click', this.toggleSound.bind(this));
 
-this.nextButton = this.bar.querySelector('.wizard__next-button');
-this.nextButton.addEventListener('click', () => { this.next(); });
+
+
+this.soundButton.addEventListener('click', this.toggleSound.bind(this));
 
 this.classTrainedEvent = this.classTrained.bind(this);
 
@@ -438,10 +459,6 @@ window.addEventListener('scroll', this.scrollEvent);
 
 this.resizeEvent();
 this.scrollEvent();
-}
-
-iniializeSections() {
-
 }
 
 stickBar() {
@@ -484,7 +501,7 @@ classTriggered(event) {
     if (this.numTriggered > 4 && !this.triggerTimer) {
         GLOBALS.outputSection.stopWizardMode();
         this.triggerTimer = setTimeout(() => {
-            this.play("classTriggered");
+            this.play(5);
         }, 1500);
     }
 }
@@ -494,21 +511,21 @@ classTrained(event) {
     let numSamples = event.detail.numSamples;
 
     if (numSamples < 30) {
-        this.play("trainMore");
+        this.play(6);
     }
     
     if (id === 'green' && numSamples >= 30 && !this.greenDone) {
         this.greenDone = true;
         GLOBALS.learningSection.dehighlightClass(0);
         GLOBALS.inputSection.hideGif(0);
-        this.play("greenTrained");
+        this.play(3);
         window.removeEventListener('class-trained', this.classTrainedEvent);
     }
 
     if (id === 'purple' && numSamples >= 30) {
         GLOBALS.learningSection.dehighlightClass(1);
         GLOBALS.inputSection.hideGif(1);
-        this.play("purpleTrained");
+        this.play(4);
         window.removeEventListener('class-trained', this.classTrainedEvent);
     }
 }
@@ -526,72 +543,67 @@ ended() {
     this.playing = false;
     this.stopAudioTimer();
 
+    if (this.currentIndex === 0) {
+        let that = this;
 
+        if (localStorage.getItem('webcam_status') === null) {
+            this.play(1);
+            this.webcamEvent = this.webcamStatus.bind(this);
+            window.addEventListener('webcam-status', this.webcamEvent);
+        }else if (localStorage.getItem('webcam_status') === 'granted') {
+            GLOBALS.camInput.start();
+            this.play(2);
+        }else if (localStorage.getItem('webcam_status') === 'denied') {
+            this.play(7);
+
+        }
+    }
 
 }
 
 
 timeUpdate() {
+    if (this.audio.currentTime > (this.currentStep.stopTime) && this.playing === true) {
+        this.audio.pause();
+        this.ended();
+    }
 
-    if (this.currentStep && this.currentStep.duration) {
-        let percentage = (this.audio.currentTime - this.stepStartTime) / this.currentStep.duration;
-        if (percentage > 1) {
-            this.timer.style.opacity = 0;
-        } else {
-            this.timer.style.opacity = 1;
-            this.timerFill.style.width = 80 * percentage + 'px';
+    if (this.currentStep) {
+        if (this.currentStep.waitForEvent) {
+            this.waitingForEvent = true;
         }
 
-        if (percentage > 1)
-            this.next();
+        this.currentStep.triggers.forEach((step) => {
+            if (this.audio.currentTime >= step.startTime && this.audio.currentTime <= step.stopTime && step.playing !== true) {
+                step.playing = true;
+                if (step.event) {
+                    this.currentTrigger = step;
+                    step.event();
+                }
+            }
+        });
+    }
+
+
+    let percentage = (this.audio.currentTime - this.baseTime) / this.duration;
+    if (percentage > 1) {
+        percentage = 0;
+        this.timer.style.opacity = 0;
+    }else {
+        this.timer.style.opacity = 1;
+        this.timerFill.style.width = 80 * percentage + 'px';
     }
 
     this.audioTimer = requestAnimationFrame(this.timeUpdate.bind(this));
 
 }
 
-play(stepName) {
+play(index) {
+    this.currentIndex = index;
+    this.currentStep = this.steps[index];
+    this.audio.currentTime = this.currentStep.startTime;
     this.playing = true;
-    if (stepName) {
-        var stepInfo = this.findStep(stepName);
-        if (!stepInfo)
-            throw `Step ${stepName} not found.`;
-        this.sectionIndex = stepInfo.sectionIndex;
-        this.stepIndex = stepInfo.stepIndex;
-    }
-    var section = this.sections[this.sectionIndex];
-    this.currentStep = section.steps[this.stepIndex];
-    this.stepStartTime = this.audio.currentTime;
-
-    var step = this.currentStep;
-    this.nextButton.style.display = (step.duration && step.execute) ? "none" : "block";
-    this.timer.style.display = (step.duration && step.execute) ? "block" : "none";
-
-    if (step.text)
-        this.setText(step.text, section.title);
-    if (step.execute) {
-        step.execute();
-    }
-    
-    //this.audio.currentTime = this.currentStep.startTime;
     this.audio.play();
-}
-
-findStep(stepName) {
-    for (var sectionIndex = 0; sectionIndex < this.sections.length; sectionIndex++) {
-        var section = this.sections[sectionIndex];
-        for (var stepIndex = 0; stepIndex < section.steps.length; stepIndex++) {
-            var step = section.steps[stepIndex];
-            if (step.name === stepName)
-                return {
-                    section: section,
-                    step: step,
-                    sectionIndex: sectionIndex,
-                    stepIndex: stepIndex,
-                };
-        }
-    }
-    return null;
 }
 
 touchPlay() {
@@ -626,13 +638,16 @@ unmute() {
     this.soundIcon.classList.add('wizard__sound-icon--on');
 }
 
-setText(message, title) {
+setText(message, isTip) {
     let text = message;
     this.textContainer.textContent = message;
-    this.titleContainer.textContent = title;
 
     if (message.length > 0) {
         this.timerFill.style.width = 0 + 'px';
+        if (this.currentTrigger) {
+            this.baseTime = this.currentTrigger.startTime;
+            this.duration = this.currentTrigger.stopTime - this.baseTime;
+        }
     }
 }
 
@@ -657,29 +672,10 @@ start() {
     let that = this;
     this.wizardRunning = true;
     this.soundButton.style.display = 'block';
-    this.play();
+    this.play(0);
     this.startAudioTimer();
     GLOBALS.launchScreen.destroy();
     gtag('event', 'wizard_start');        
-}
-
-next() {
-    if (!this.wizardRunning)
-        return;
-    
-    var section = this.sections[this.sectionIndex];
-    this.stepIndex++;
-
-    if (this.stepIndex >= section.steps.length) {
-        this.stepIndex = 0;
-        this.sectionIndex ++;
-        if (this.sectionIndex >= this.sections.length) {
-            section = null;
-            this.ended();
-        }
-    }
-
-    this.play();
 }
 
 startCamera() {

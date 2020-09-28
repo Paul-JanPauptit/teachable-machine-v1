@@ -43,6 +43,7 @@
 	background-size: 100%
 	background-position-y: 0px
 	margin: 5px
+	display: none
 }
 
 .wizard__sound-icon.wizard__sound-icon--on {
@@ -77,13 +78,33 @@
 }
 
 .wizard__skip-button {
-	
+	display: none !important;
 }
+
+.wizard__text-title {
+	color: #fff;
+	@extend .font__size--large
+}
+
 
 .wizard__text-inner {
 	width: 80%
 	vertical-align: middle
 	align-items: center
+}
+
+.wizard__next-button {
+	display: inline-block
+	flex: none
+	padding: 0 space(1)
+	height: 40px
+	line-height: 40px
+	text-transform: uppercase
+	background: black
+	margin: auto 0 auto space(2)
+	cursor: pointer
+	color: $color__white
+	text-decoration: none
 }
 
 

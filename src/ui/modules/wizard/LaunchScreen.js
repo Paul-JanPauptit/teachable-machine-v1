@@ -36,28 +36,6 @@ class LaunchScreen {
         intro.addEventListener('touchstart', defaultPrevent);
         intro.addEventListener('touchmove', defaultPrevent);
 
-
-        let loader = ((el) => {
-            let ajax = new XMLHttpRequest();
-            ajax.open('GET', 'assets/social-facebook.svg', true);
-            ajax.onload = (event) => {
-                el.innerHTML = ajax.responseText;
-            };
-            ajax.send();
-        })(facebookButton);
-
-        loader = ((el) => {
-            let ajax = new XMLHttpRequest();
-            ajax.open('GET', 'assets/social-twitter.svg', true);
-            ajax.onload = (event) => {
-                el.innerHTML = ajax.responseText;
-            };
-            ajax.send();
-        })(twitterButton);
-
-        facebookButton.addEventListener('click', this.openFacebookPopup.bind(this));
-        twitterButton.addEventListener('click', this.openTwitterPopup.bind(this));
-        
         if (GLOBALS.browserUtils.isCompatible === true && GLOBALS.browserUtils.isMobile === false) {
             this.startButton.element.classList.remove('button--disabled');
             document.querySelector('.wizard__browser-warning').style.display = 'none';
@@ -77,22 +55,6 @@ class LaunchScreen {
 
         this.startButton.element.addEventListener('click', this.startClick.bind(this));
         this.startButton.element.addEventListener('touchend', this.startClick.bind(this));
-    }
-
-    openFacebookPopup(event) {
-        event.preventDefault();
-        let url = event.currentTarget.getAttribute('href');
-        /* eslint-disable space-infix-ops */
-        window.open(url, 'fbShareWindow', 'height=450, width=550, top='+(window.innerHeight/2-275)+', left='+(window.innerWidth/2-225)+',toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
-        /* eslint-enable space-infix-ops */
-    }
-
-    openTwitterPopup(event) {
-        event.preventDefault();
-        let url = event.currentTarget.getAttribute('href');
-        /* eslint-disable space-infix-ops */
-        window.open(url, 'fbShareWindow', 'height=450, width=600, top='+(window.innerHeight/2-150)+', left='+(window.innerWidth/2-225)+', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
-        /* eslint-enable space-infix-ops */
     }
 
     skipClick(event) {
