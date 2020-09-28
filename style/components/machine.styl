@@ -10,10 +10,16 @@
 
 .machine {
 	position: relative
-	background: $color__background
+	background: url(assets/background.png);
+	background-position: center;
+	background-repeat: no-repeat; 
+	background-size: cover;	
+	background-color: $color__background;
 	padding-top: space(8)
 	padding-bottom: space(10)
 	text-align: center
+
+	height: calc(100vh - 150px)
 
 	@extend .font__size--small
 	letter-spacing: 0.3px
@@ -41,6 +47,8 @@
 .section__title {
 	height: 30px
 	line-height: 30px
+	color: #ffffff
+	opacity: 0.8
 	@extend .uppercase
 	@extend .font__size--small
 }
