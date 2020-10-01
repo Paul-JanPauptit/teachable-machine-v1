@@ -37,7 +37,7 @@ class Wizard {
           text: 'This experiment lets you explore how machine learning works.'
         },
         {
-          text: 'You can teach the machine using your camera. And now we make this text really long to test out positional jumping for multiline instructions',
+          text: 'You can teach the machine using your camera.',
           execute: () => {
             if (localStorage.getItem('webcam_status') === null) {
               this.play("cameraInit");
@@ -52,6 +52,7 @@ class Wizard {
           }
         },
         {
+          name: 'cameraInit',
           execute: () => {
             /*eslint-disable */
             if (!GLOBALS.browserUtils.isMobile && !GLOBALS.isCamGranted) {
@@ -80,7 +81,7 @@ class Wizard {
           }
         },
         {
-          duration: 1,
+          duration: 1.5,
           text: 'Here are three classes: green, purple, orange.',
           execute: () => {
             GLOBALS.inputSection.dehighlight();
@@ -107,7 +108,7 @@ class Wizard {
           }
         },
         {
-          duration: 1.5,
+          duration: 1,
           execute: () => {
             GLOBALS.learningSection.dehighlightClass(0);
             GLOBALS.learningSection.dehighlightClass(1);
@@ -134,13 +135,12 @@ class Wizard {
           }
         },
         {
-          text: "It’s set to respond with one of these GIFs. You can also make it respond with sounds or speech.",
+          text: "It’s set to respond with one of these GIFs.",
           execute: () => {
             GLOBALS.outputSection.dehighlight();
           }
         },
         {
-          duration: 42.2 - 36.8,
           text: "First, we’re going to teach it to respond with the rabbit GIF.",
           execute: () => {
             GLOBALS.inputSection.undim();
