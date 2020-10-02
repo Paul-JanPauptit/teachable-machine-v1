@@ -181,6 +181,45 @@ class Wizard {
       ]
     });
 
+    // Section 3 - Teaching cat and dog dataset
+    this.sections.push({
+      title: "3. Teaching cat and dog dataset",
+      steps: [
+        {
+          text: "Now pick up and hold the stick figure with the cat image in front of the camera and hold this purple button for a couple seconds.",
+          waitForEvent: true,
+          execute: () => {
+            window.addEventListener('class-trained', this.classTrainedEvent);
+            GLOBALS.learningSection.enableClass(1);
+            GLOBALS.learningSection.highlightClass(1);
+          }
+        },
+        {
+          name: "purpleTrained",
+          text: ' You should see the cat GIF when you hold up the cat image, and the rabbit GIF when it’s down. Try it.',
+          execute: () => {
+            GLOBALS.learningSection.dehighlightClass(1);
+          }
+        },
+        { text: 'Great! Looks like it’s working.' },
+        {
+          text: "Now pick up and hold the stick figure with the dog image in front of the camera and hold the orange button for a couple seconds.",
+          waitForEvent: true,
+          execute: () => {
+            window.addEventListener('class-trained', this.classTrainedEvent);
+            GLOBALS.learningSection.enableClass(2);
+            GLOBALS.learningSection.highlightClass(2);
+          }
+        },
+        {
+          name: "orangeTrained",
+          text: 'You should now see the cat GIF when you hold the cat image and the dog GIF when you hold the dog image. When they’re down you should see the rabbit GIF.'
+        },
+        { text: 'You’ve now fully teached the machine!' }
+      ]
+    });
+
+
 
     /*
     
@@ -371,7 +410,7 @@ class Wizard {
     */
 
     this.wizardRunning = false;
-    this.sectionIndex = 0; // HACK, PJ: Do not commit anything other than 0, for testing purposes only.
+    this.sectionIndex = 1; // HACK, PJ: Do not commit anything other than 0, for testing purposes only.
     if (this.sectionIndex > 0) // For testing purposes only.
       this.startCamera();
 
@@ -496,6 +535,14 @@ class Wizard {
       this.play("purpleTrained");
       window.removeEventListener('class-trained', this.classTrainedEvent);
     }
+
+    if (id === 'orange' && numSamples >= 30) {
+      GLOBALS.learningSection.dehighlightClass(2);
+      GLOBALS.inputSection.hideGif(2);
+      this.play("orangeTrained");
+      window.removeEventListener('class-trained', this.classTrainedEvent);
+    }
+
   }
 
   toggleSound(event) {
