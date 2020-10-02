@@ -16,45 +16,10 @@ class LaunchScreen {
     constructor() {
         this.element = document.querySelector('.intro');
 
-        this.startButton = new Button(document.querySelector('#start-tutorial-button'));
+        this.startButton = document.querySelector('#start-tutorial-button');
 
-        this.messageIsCompatible = document.querySelector('#is-compatible');
-        this.messageIsNotCompatible = document.querySelector('#is-not-compatible');
-
-        this.startButton.element.classList.add('button--disabled');
-        document.querySelector('.wizard__browser-warning').style.display = 'block';
-
-        let facebookButton = document.querySelector('.intro__share-link--facebook');
-        let twitterButton = document.querySelector('.intro__share-link--twitter');
-
-        let intro = document.querySelector('.intro__content-mobile');
-        /*eslint-disable */
-        let defaultPrevent = (event) => {
-            event.preventDefault();
-        };
-        /* eslint-enable*/
-        intro.addEventListener('touchstart', defaultPrevent);
-        intro.addEventListener('touchmove', defaultPrevent);
-
-        if (GLOBALS.browserUtils.isCompatible === true && GLOBALS.browserUtils.isMobile === false) {
-            this.startButton.element.classList.remove('button--disabled');
-            document.querySelector('.wizard__browser-warning').style.display = 'none';
-        }
-
-        if (GLOBALS.browserUtils.isMobile) {
-            this.messageIsCompatible.style.display = 'block';
-
-        }else {
-            this.messageIsCompatible.style.display = 'none';
-        }
-
-        if (GLOBALS.browserUtils.isMobile && !GLOBALS.browserUtils.isCompatible) {
-            this.messageIsCompatible.style.display = 'none';
-            this.messageIsNotCompatible.style.display = 'block';
-        }
-
-        this.startButton.element.addEventListener('click', this.startClick.bind(this));
-        this.startButton.element.addEventListener('touchend', this.startClick.bind(this));
+        this.startButton.addEventListener('click', this.startClick.bind(this));
+        this.startButton.addEventListener('touchend', this.startClick.bind(this));
     }
 
     skipClick(event) {

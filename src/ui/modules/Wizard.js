@@ -160,19 +160,8 @@ class Wizard {
       title: "2. Teaching first dataset",
       steps: [
         {
-          text: "Do something like put up your hand (see example above) and hold this green button for a couple seconds.",
-          execute: () => {
-            if (GLOBALS.browserUtils.isMobile) {
-              TweenLite.to(window, 0, { scrollTo: 175 });
-            }
-          }
-        },
-        {
-          duration: 4.1,
-          execute: () => GLOBALS.inputSection.showGif(0),
-        },
-        {
-          duration: 2.7,
+          text: "Stand in front of the camera and hold this green button for a couple of seconds.",
+          waitForEvent: true,
           execute: () => {
             window.addEventListener('class-trained', this.classTrainedEvent);
             GLOBALS.learningSection.enableClass(0);
@@ -181,21 +170,13 @@ class Wizard {
         },
         {
           name: "greenTrained",
-          duration: 53.8 - 49.6,
-          text: 'You should now see the green bar and the rabbit GIF.'
+          text: 'You should now see the green bar and the rabbit GIF.',
+          execute: () => {
+            GLOBALS.learningSection.dehighlightClass(0);
+          }
         },
-        {
-          duration: 58.6 - 53.9,
-          text: 'But if you move around, you’ll see that they’re always showing no matter what.'
-        },
-        {
-          duration: 58.6 - 55.2,
-          execute: () => GLOBALS.inputSection.showGif(1)
-        },
-        {
-          text: "That’s because the machine is looking at your input, and picking which class looks most similar.",
-          execute: () => GLOBALS.inputSection.hideGif(1)
-        },
+        { text: 'But if you move around, you’ll see that they’re always showing no matter what.' },
+        { text: "That’s because the machine is looking at your input, and picking which class looks most similar." },
         { text: 'But since you’ve only trained the green class, it always picks that one. That’s why you need to teach it a second class.' }
       ]
     });
@@ -390,7 +371,10 @@ class Wizard {
     */
 
     this.wizardRunning = false;
-    this.sectionIndex = 0;
+    this.sectionIndex = 0; // HACK, PJ: Do not commit anything other than 0, for testing purposes only.
+    if (this.sectionIndex > 0) // For testing purposes only.
+      this.startCamera();
+
     this.stepIndex = 0;
 
     this.timer = document.querySelector('.wizard__timer');
@@ -565,7 +549,7 @@ class Wizard {
     this.stepStartTime = this.audio.currentTime;
 
     var step = this.currentStep;
-    this.nextButton.style.display = (step.duration && step.execute) ? "none" : "block";
+    this.nextButton.style.display = (step.duration && step.execute || step.waitForEvent) ? "none" : "block";
     this.timer.style.display = (step.duration && step.execute) ? "block" : "none";
 
     if (step.text)
