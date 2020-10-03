@@ -219,14 +219,24 @@ class Wizard {
       ]
     });
 
-
+    // Section 4 - Validation of datasets
+    this.sections.push({
+      title: "4. Validation of datasets",
+      steps: [
+        { text: 'See if the machine will now recognize similar images. Hold the image of the dog in the snow and the image of the mountain lion in front of the camera.'},
+        { text: 'Great! Looks like it’s working.' },
+        { text: 'Is the machine foolproof? Try to hold the image of the wolf in front of the camera.' },
+        { text: 'The machine switches between the cat GIF and the dog GIF!' },
+        { text: 'This is because the machine can not distinguish between the cat and the dog, since they are not representative for the wolf.' },
+        { text: 'Machines need large data-sets to be able to recognize a larger variety of images.' },
+        { text: 'Thanks for playing around. Continue teaching your machine whatever you want, or continue the exhbition. ' },
+      ]
+    });
 
     /*
     
     
-                        
-    
-    
+ 
     
     
     
@@ -410,7 +420,7 @@ class Wizard {
     */
 
     this.wizardRunning = false;
-    this.sectionIndex = 1; // HACK, PJ: Do not commit anything other than 0, for testing purposes only.
+    this.sectionIndex = 0; // HACK, PJ: Do not commit anything other than 0, for testing purposes only.
     if (this.sectionIndex > 0) // For testing purposes only.
       this.startCamera();
 
