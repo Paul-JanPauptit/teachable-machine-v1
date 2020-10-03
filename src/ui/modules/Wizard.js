@@ -21,12 +21,6 @@ import TweenLite from 'gsap';
 class Wizard {
   constructor() {
 
-    // TODO, PJ: Deze moeten we nog verwerken in de wizard.
-    this.sectionTitles = {
-      catAndDog: "3. Teaching cat and dog dataset",
-      validation: "4. Validation of datasets"
-    };
-
     this.sections = [];
 
     // Section 1 - Introduction
@@ -233,194 +227,8 @@ class Wizard {
       ]
     });
 
-    /*
-    
-    
- 
-    
-    
-    
-    
-    
-    
-            name: "greenTrained",
-        {
-            startTime: 72.39999999999999,
-            stopTime: 78.8,
-            event: () => {
-                this.setText('So sit there with your hand down, and hold this purple button for a couple seconds.');
-            }
-        },
-        {
-            startTime: 75.1,
-            stopTime: 78.8,
-            event: () => {
-                GLOBALS.inputSection.showGif(2);
-            }
-        },
-        {
-            startTime: 76.3,
-            stopTime: 78.8,
-            event: () => {
-                window.addEventListener('class-trained', this.classTrainedEvent);
-                GLOBALS.learningSection.enableClass(1);
-                GLOBALS.learningSection.highlightClass(1);
-            }
-        }
-        ]
-    });
-    
-    
-    this.steps.push({
-        startTime: 80.8,
-        stopTime: 92.8,
-        waitForEvent: true,
-        triggers: [
-        {
-            name: "purpleTrained"
-            startTime: 83.39999999999999,
-            stopTime: 92.8,
-            event: () => {
-                this.setText('Now, move your hand up and down. You should see the cat GIF when your hand’s up, and dog the GIF when it’s down. Try it.');
-                GLOBALS.inputSection.hideGif(2);
-            }
-        },
-        {
-            startTime: 84.8,
-            stopTime: 92.8,
-            event: () => {
-                GLOBALS.inputSection.showGif(3);
-    
-            }
-        },
-        {
-            startTime: 90.8,
-            stopTime: 92.8,
-            event: () => {
-                window.addEventListener('class-triggered', this.classTriggered.bind(this));
-                GLOBALS.outputSection.startWizardMode();
-    
-            }
-        }
-        ]
-    });
-    
-    
-    this.steps.push({
-        name: "classTrained"
-        startTime: 93.2,
-        stopTime: 120.89999999999999,
-        waitForEvent: true,
-        triggers: [
-        {
-            startTime: 93.2,
-            stopTime: 95.6,
-            event: () => {
-                GLOBALS.inputSection.hideGif(3);
-                this.setText('Great! Looks like it’s working.');
-            }
-        },
-        {
-            startTime: 95.7,
-            stopTime: 99.2,
-            event: () => {
-                this.setText('The orange button works the same way.');
-                GLOBALS.learningSection.enableClass(2);
-                GLOBALS.learningSection.highlightClass(2);
-            }
-        },
-        {
-            startTime: 99.39999999999999,
-            stopTime: 104.2,
-            event: () => {
-                GLOBALS.learningSection.dehighlightClass(2);
-                this.setText('The x’s are for resetting your classes to teach them something new.');
-            }
-        },
-        {
-            startTime: 99.8,
-            stopTime: 104.2,
-            event: () => {
-                GLOBALS.learningSection.dehighlightClass(2);
-                GLOBALS.learningSection.highlightClassX(0);
-            }
-        },
-        {
-            startTime: 104.39999999999999,
-            stopTime: 108.1,
-            event: () => {
-                GLOBALS.learningSection.dehighlightClassX(0);
-                GLOBALS.outputSection.highlight();
-                this.setText('And try the other outputs here.');
-                if (GLOBALS.browserUtils.isMobile) {
-                    TweenLite.to(window, 0, {scrollTo: 660});
-                }
-            }
-        },
-        {
-            startTime: 108.2,
-            stopTime: 112.39999999999999,
-            event: () => {
-                GLOBALS.outputSection.dehighlight();
-                this.setText('Now, start playing around. Teach your machine whatever you want.');
-            }
-        },
-        {
-            startTime: 112.6,
-            stopTime: 119,
-            event: () => {
-                this.setText('Below, you’ll find some ideas for things to try, and links to learn more.');
-            }
-        },
-        {
-            startTime: 119,
-            stopTime: 119.1,
-            event: () => {
-                this.setText('');
-                this.skip();
-                gtag('event', 'wizard_finish');            
-            }
-        }
-        ]
-    });
-    
-    
-    this.steps.push({
-        name: "trainMore",
-        startTime: 131,
-        stopTime: 138.8,
-        waitForEvent: true,
-        triggers: [
-        {
-            startTime: 131,
-            stopTime: 138.8,
-            event: () => {
-                this.setText('Your machine will work best with at least 30 examples per class. Try recording some more.');
-            }
-        }
-        ]
-    });
-    
-    this.steps.push({
-        startTime: 125.5,
-        stopTime: 130.8,
-        waitForEvent: true,
-        triggers: [
-        {
-            name: "cameraDenied"
-            startTime: 125.5,
-            stopTime: 130.8,
-            event: () => {
-                this.activateWebcamButton.style.display = 'block';
-                this.setText('Seems like the camera isn’t working. It might be your browser or camera settings.');
-            }
-        }
-        ]
-    });
-    */
-
     this.wizardRunning = false;
-    this.sectionIndex = 0; // HACK, PJ: Do not commit anything other than 0, for testing purposes only.
+    this.sectionIndex = 3; // HACK, PJ: Do not commit anything other than 0, for testing purposes only.
     if (this.sectionIndex > 0) // For testing purposes only.
       this.startCamera();
 
@@ -450,6 +258,9 @@ class Wizard {
     this.nextButton = this.bar.querySelector('.wizard__next-button');
     this.nextButton.addEventListener('click', () => { this.next(); });
 
+    this.restartButton = document.querySelector('#restart-machine-button');
+    this.restartButton.addEventListener('click', () => { this.restart(); });
+
     this.classTrainedEvent = this.classTrained.bind(this);
 
     this.numTriggered = 0;
@@ -468,6 +279,10 @@ class Wizard {
     this.scrollEvent = this.scroll.bind(this);
     window.addEventListener('resize', this.resizeEvent);
     window.addEventListener('scroll', this.scrollEvent);
+
+    this.documentClickEvent = this.documentClick.bind(this);
+    // we use mouseup because otherwise the next event will already be playing when we test (buttonUp handling of machine buttons)
+    document.body.addEventListener('mouseup', this.documentClickEvent, true);     
 
 
     this.resizeEvent();
@@ -506,6 +321,15 @@ class Wizard {
     }
   }
 
+  documentClick(event) {
+    // Allow the user to click anywhere on the screen, if we are waiting for the next step. 
+    if (this.waitingForNextClick)
+    {
+      event.preventDefault();
+      event.stopPropagation();
+      this.next();
+    }
+  }
 
   classTriggered(event) {
     let id = event.detail.id;
@@ -564,15 +388,6 @@ class Wizard {
     }
   }
 
-  ended() {
-    this.playing = false;
-    this.stopAudioTimer();
-
-
-
-  }
-
-
   timeUpdate() {
 
     if (this.currentStep && this.currentStep.duration) {
@@ -606,7 +421,10 @@ class Wizard {
     this.stepStartTime = this.audio.currentTime;
 
     var step = this.currentStep;
-    this.nextButton.style.display = (step.duration && step.execute || step.waitForEvent) ? "none" : "block";
+
+    this.waitingForNextClick = !(step.duration && step.execute || step.waitForEvent);
+
+    this.nextButton.style.display = this.waitingForNextClick ? "block" : "none";
     this.timer.style.display = (step.duration && step.execute) ? "block" : "none";
 
     if (step.text)
@@ -706,6 +524,13 @@ class Wizard {
     gtag('event', 'wizard_start');
   }
 
+  restart() {
+    // Restart the complete machine. Not technically part of the wizard,
+    // but I keep changing the position of this button and for our purposes 
+    // the wizard has become more of a generic controller anyway :D
+    window.location.reload();
+  }
+
   next() {
     if (!this.wizardRunning)
       return;
@@ -718,7 +543,7 @@ class Wizard {
       this.sectionIndex++;
       if (this.sectionIndex >= this.sections.length) {
         section = null;
-        this.ended();
+        this.finish();
       }
     }
 
@@ -729,15 +554,21 @@ class Wizard {
     GLOBALS.camInput.start();
   }
 
-  skip(event) {
+  finish(event) {
     if (event) {
       event.preventDefault();
-      gtag('event', 'wizard_skip_mid');
     }
 
     if (this.wizardRunning) {
+
       TweenLite.to(this.wizardWrapper, 0.3, {
         height: 0,
+        onComplete: () => {
+          this.wizardWrapper.style.display = 'none';
+        }
+      });
+      TweenLite.to(this.machine, 0.3, {
+        height: "100vh",
         onComplete: () => {
           this.wizardWrapper.style.display = 'none';
         }
@@ -775,6 +606,8 @@ class Wizard {
 
     window.removeEventListener('resize', this.resizeEvent);
     window.removeEventListener('scroll', this.scrollEvent);
+
+    this.restartButton.style.display = 'inline-block';
   }
 
 }
