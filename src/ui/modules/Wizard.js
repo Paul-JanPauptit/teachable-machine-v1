@@ -322,6 +322,7 @@ class Wizard {
   }
 
   documentClick(event) {
+    this.lastActivityTime = Date.now();
     // Allow the user to click anywhere on the screen, if we are waiting for the next step. 
     if (this.waitingForNextClick)
     {
@@ -531,9 +532,19 @@ class Wizard {
     window.location.reload();
   }
 
+  checkAutoRestart() {
+    var inactiveTime = (Date.now() - this.lastActivityTime) / 1000; 
+    if (inactiveTime > 30) // in seconds
+      this.restart();
+    else 
+      setTimeout(this.checkAutoRestart.bind(this), 1000);
+  }
+
   next() {
     if (!this.wizardRunning)
       return;
+
+    var shouldPlay = true;  
 
     var section = this.sections[this.sectionIndex];
     this.stepIndex++;
@@ -543,11 +554,13 @@ class Wizard {
       this.sectionIndex++;
       if (this.sectionIndex >= this.sections.length) {
         section = null;
+        shouldPlay = false;
         this.finish();
       }
     }
 
-    this.play();
+    if (shouldPlay)
+      this.play();
   }
 
   startCamera() {
@@ -608,6 +621,8 @@ class Wizard {
     window.removeEventListener('scroll', this.scrollEvent);
 
     this.restartButton.style.display = 'inline-block';
+
+    setTimeout(this.checkAutoRestart.bind(this), 1000);
   }
 
 }
