@@ -228,7 +228,7 @@ class Wizard {
     });
 
     this.wizardRunning = false;
-    this.sectionIndex = 3; // HACK, PJ: Do not commit anything other than 0, for testing purposes only.
+    this.sectionIndex = 0; // HACK, PJ: Do not commit anything other than 0, for testing purposes only.
     if (this.sectionIndex > 0) // For testing purposes only.
       this.startCamera();
 
@@ -256,7 +256,6 @@ class Wizard {
     this.soundButton.addEventListener('click', this.toggleSound.bind(this));
 
     this.nextButton = this.bar.querySelector('.wizard__next-button');
-    this.nextButton.addEventListener('click', () => { this.next(); });
 
     this.restartButton = document.querySelector('#restart-machine-button');
     this.restartButton.addEventListener('click', () => { this.restart(); });
@@ -281,7 +280,6 @@ class Wizard {
     window.addEventListener('scroll', this.scrollEvent);
 
     this.documentClickEvent = this.documentClick.bind(this);
-    // we use mouseup because otherwise the next event will already be playing when we test (buttonUp handling of machine buttons)
     document.body.addEventListener('mouseup', this.documentClickEvent, true);     
 
 
