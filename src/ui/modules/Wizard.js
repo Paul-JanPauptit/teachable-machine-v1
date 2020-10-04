@@ -75,7 +75,9 @@ class Wizard {
           }
         },
         {
+
           duration: 1.5,
+          groupWithNext: true,
           text: 'Here are three classes: green, purple, orange.',
           execute: () => {
             GLOBALS.inputSection.dehighlight();
@@ -90,12 +92,14 @@ class Wizard {
         },
         {
           duration: 1,
+          groupWithNext: true,
           execute: () => {
             GLOBALS.learningSection.highlightClass(0);
           }
         },
         {
           duration: 1,
+          groupWithNext: true,
           execute: () => {
             GLOBALS.learningSection.dehighlightClass(0);
             GLOBALS.learningSection.highlightClass(1);
@@ -103,6 +107,7 @@ class Wizard {
         },
         {
           duration: 1,
+          groupWithNext: true,
           execute: () => {
             GLOBALS.learningSection.dehighlightClass(0);
             GLOBALS.learningSection.dehighlightClass(1);
@@ -116,7 +121,7 @@ class Wizard {
           }
         },
         {
-          duration: 4,
+          duration: 3,
           text: "Here is the output, where the machine responds.",
           execute: () => {
             if (GLOBALS.browserUtils.isMobile) {
@@ -390,7 +395,8 @@ class Wizard {
   timeUpdate() {
 
     if (this.currentStep && this.currentStep.duration) {
-      let percentage = (this.audio.currentTime - this.stepStartTime) / this.currentStep.duration;
+      let startTime = this.groupStartTime || this.stepStartTime;
+      let percentage = (this.audio.currentTime - startTime) / this.currentStep.duration;
       if (percentage > 1) {
         this.timer.style.opacity = 0;
       } else {
@@ -420,6 +426,9 @@ class Wizard {
     this.stepStartTime = this.audio.currentTime;
 
     var step = this.currentStep;
+
+    if (step.groupWithNext && !this.groupStartTime)
+      this.groupStartTime = this.stepStartTime;
 
     this.waitingForNextClick = !(step.duration && step.execute || step.waitForEvent);
 
@@ -542,23 +551,26 @@ class Wizard {
     if (!this.wizardRunning)
       return;
 
-    var shouldPlay = true;  
-
     var section = this.sections[this.sectionIndex];
     this.stepIndex++;
 
     if (this.stepIndex >= section.steps.length) {
       this.stepIndex = 0;
       this.sectionIndex++;
+
       if (this.sectionIndex >= this.sections.length) {
         section = null;
-        shouldPlay = false;
         this.finish();
+        return;
       }
+
+      section = this.sections[this.sectionIndex];
+      var step = section.steps[stepIndex];
+      if (!step.groupWithNext)
+        this.groupStartTime = null;
     }
 
-    if (shouldPlay)
-      this.play();
+    this.play();
   }
 
   startCamera() {
