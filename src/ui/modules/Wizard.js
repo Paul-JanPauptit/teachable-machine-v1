@@ -106,7 +106,7 @@ class Wizard {
           }
         },
         {
-          duration: 1,
+          duration: 1.5,
           groupWithNext: true,
           execute: () => {
             GLOBALS.learningSection.dehighlightClass(0);
@@ -396,7 +396,8 @@ class Wizard {
 
     if (this.currentStep && this.currentStep.duration) {
       let startTime = this.groupStartTime || this.stepStartTime;
-      let percentage = (this.audio.currentTime - startTime) / this.currentStep.duration;
+      let duration = this.groupDuration || this.currentStep.duration;
+      let percentage = (this.audio.currentTime - startTime) / duration;
       if (percentage > 1) {
         this.timer.style.opacity = 0;
       } else {
@@ -404,7 +405,7 @@ class Wizard {
         this.timerFill.style.width = 80 * percentage + 'px';
       }
 
-      if (percentage > 1)
+      if (this.audio.currentTime > this.stepStartTime + this.currentStep.duration)
         this.next();
     }
 
@@ -427,8 +428,10 @@ class Wizard {
 
     var step = this.currentStep;
 
-    if (step.groupWithNext && !this.groupStartTime)
+    if (step.groupWithNext && !this.groupStartTime) {
       this.groupStartTime = this.stepStartTime;
+      this.groupDuration = this.calculateGroupDuration();
+    }
 
     this.waitingForNextClick = !(step.duration && step.execute || step.waitForEvent);
 
@@ -443,6 +446,20 @@ class Wizard {
 
     //this.audio.currentTime = this.currentStep.startTime;
     this.audio.play();
+  }
+
+  calculateGroupDuration() {
+    var section = this.sections[this.sectionIndex];
+    
+    var stepIndex = this.stepIndex;
+    var groupWithNext = true;
+    var duration = 0;
+    while (groupWithNext) {
+      var step = section.steps[stepIndex++];
+      duration += (step.duration || 0);
+      var groupWithNext = step.groupWithNext
+    }
+    return duration;
   }
 
   findStep(stepName) {
@@ -563,11 +580,13 @@ class Wizard {
         this.finish();
         return;
       }
+    }
 
-      section = this.sections[this.sectionIndex];
-      var step = section.steps[stepIndex];
-      if (!step.groupWithNext)
-        this.groupStartTime = null;
+    // Clear any previously running groups
+    var step = section.steps[this.stepIndex];
+    if (!step.groupWithNext) {
+      this.groupStartTime = null;
+      this.groupDuration = null;
     }
 
     this.play();
