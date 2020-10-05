@@ -27,6 +27,12 @@ import BrowserUtils from './ui/components/BrowserUtils';
 
 function init() {
 
+	// Prevent zooming
+  window.addEventListener("wheel", function (e) {
+    if (e.ctrlKey)
+      e.preventDefault();
+  }, { passive: false });
+
 	// Shim for forEach for IE/Edge
   if (typeof NodeList.prototype.forEach !== 'function') {
     NodeList.prototype.forEach = Array.prototype.forEach;
