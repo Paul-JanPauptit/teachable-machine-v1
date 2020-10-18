@@ -145,9 +145,11 @@ export default class WebcamClassifier {
 
   
   async predict(image) {
+    tf.ENV.globalEngine.startScope(); // Prevents huge memory leak!
     const imgFromPixels = tf.fromPixels(image);
     const logits = this.mobilenetModule.infer(imgFromPixels, 'conv_preds');
     const response = await this.classifier.predictClass(logits);
+    tf.ENV.globalEngine.endScope();  // Prevents huge memory leak!
     const newOutput = {
       classIndex: this.mappedButtonIndexes[response.classIndex],
       confidences: {
