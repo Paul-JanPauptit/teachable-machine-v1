@@ -355,7 +355,8 @@ class Wizard {
     let numSamples = event.detail.numSamples;
 
     if (numSamples < 30) {
-      this.play("trainMore");
+      this.setText("Your machine will work best with at least 30 examples per class. Try recording some more.");
+      return;
     }
 
     if (id === 'green' && numSamples >= 30 && !this.greenDone) {
@@ -652,11 +653,11 @@ class Wizard {
     window.removeEventListener('resize', this.resizeEvent);
     window.removeEventListener('scroll', this.scrollEvent);
 
-    document.body.removeEventListener('mouseup', this.documentClickEvent);
+    document.body.removeEventListener('mouseup', this.documentClickEvent, true);
 
     this.restartButton.style.display = 'inline-block';
 
-    setTimeout(this.checkAutoRestart.bind(this), 1000);
+    setTimeout(this.checkAutoRestart.bind(this), 1000); 
   }
 
 }
