@@ -287,7 +287,6 @@ class Wizard {
     this.documentClickEvent = this.documentClick.bind(this);
     document.body.addEventListener('mouseup', this.documentClickEvent, true);     
 
-
     this.resizeEvent();
     this.scrollEvent();
   }
@@ -569,6 +568,8 @@ class Wizard {
       return;
 
     var section = this.sections[this.sectionIndex];
+    if (!section)
+        return;
     this.stepIndex++;
 
     if (this.stepIndex >= section.steps.length) {
@@ -619,6 +620,8 @@ class Wizard {
       this.wizardWrapper.style.display = 'none';
     }
 
+    this.wizardRunning = false;
+
     this.stopAudioTimer();
     this.audio.pause();
     this.clear();
@@ -648,6 +651,8 @@ class Wizard {
 
     window.removeEventListener('resize', this.resizeEvent);
     window.removeEventListener('scroll', this.scrollEvent);
+
+    document.body.removeEventListener('mouseup', this.documentClickEvent);
 
     this.restartButton.style.display = 'inline-block';
 
