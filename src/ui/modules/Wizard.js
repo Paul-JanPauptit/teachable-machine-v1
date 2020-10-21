@@ -31,7 +31,7 @@ class Wizard {
           text: 'This experiment lets you explore how machine learning works.'
         },
         {
-          text: 'You can teach the machine using your camera.',
+          text: 'You can teach the machine using the camera.',
           execute: () => {
             if (localStorage.getItem('webcam_status') === null) {
               this.play("cameraInit");
@@ -225,7 +225,7 @@ class Wizard {
         { text: 'See if the machine will now recognize similar images. Hold the image of the dog in the snow and the image of the mountain lion in front of the camera.'},
         { text: 'Great! Looks like it’s working.' },
         { text: 'Is the machine foolproof? Try to hold the image of the wolf in front of the camera.' },
-        { text: 'The machine switches between the cat GIF and the dog GIF!' },
+        { text: 'You will see either the cat GIF or the dog GIF.' },
         { text: 'This is because the machine can not distinguish between the cat and the dog, since they are not representative for the wolf.' },
         { text: 'Machines need large data-sets to be able to recognize a larger variety of images.' },
         { text: 'Thanks for playing around. Continue teaching your machine whatever you want, or continue the exhbition. ' },
