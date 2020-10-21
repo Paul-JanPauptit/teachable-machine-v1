@@ -1,8 +1,14 @@
+@font-face {
+    font-family: NewsGothic
+    src: url("assets/fonts/NewsGothicStd.otf") format("opentype")
+}
+
 .wizard {
 	width: 100vw
 	height: 150px
 	background: $color__black
 	position: relative
+	font-family: $wizardFont
 }
 
 .wizard--fixed {
@@ -59,8 +65,7 @@
 	margin: 10px 0 25px 0;
 	text-align: left
 	display: flex
-	
-	@extend .font__size--normal
+	font-size: 18px;
 }
 
 .wizard__timer {
@@ -85,7 +90,7 @@
 .wizard__text-title {
 	color: #fff;
 	margin-bottom: 12px;
-	@extend .font__size--large
+	font-size: 20px;
 }
 
 
@@ -98,7 +103,7 @@
 .wizard__next-button {
 	display: inline-block
 	flex: none
-	padding: 43px space(1)
+	padding: 39px space(1)
 	height: 40px
 	line-height: 40px
 	text-transform: uppercase
