@@ -140,7 +140,7 @@ class Wizard {
           }
         },
         {
-          text: "First, we’re going to teach it to respond with the rabbit GIF.",
+          text: "First, we’re going to teach it to respond with the robot GIF.",
           execute: () => {
             GLOBALS.inputSection.undim();
             GLOBALS.inputSection.enable();
@@ -169,23 +169,23 @@ class Wizard {
         },
         {
           name: "greenTrained",
-          text: 'You should now see the green bar and the rabbit GIF.',
+          text: 'You should now see the green bar and the robot GIF.',
           execute: () => {
             GLOBALS.learningSection.dehighlightClass(0);
           }
         },
-        { text: 'But if you move around, you’ll see that they’re always showing no matter what.' },
-        { text: "That’s because the machine is looking at your input, and picking which class looks most similar." },
+        { text: 'No matter what you do, you will always see the robot GIF.' },
+        { text: "That’s because the machine processes your input and picks which class was trained on similar images to the current one." },
         { text: 'But since you’ve only trained the green class, it always picks that one. That’s why you need to teach it a second class.' }
       ]
     });
 
-    // Section 3 - Teaching cat and dog dataset
+    // Section 3 - Teaching to distinguish cats and dogs
     this.sections.push({
-      title: "3. Teaching cat and dog dataset",
+      title: "3. Teaching to distinguish cats and dogs",
       steps: [
         {
-          text: "Now pick up and hold the stick figure with the cat image in front of the camera and hold this purple button for a couple seconds.",
+          text: "Now pick up the stick figure with the cat image and hold it in front of the camera. While doing so, press this purple button for a couple of seconds.",
           waitForEvent: true,
           execute: () => {
             window.addEventListener('class-trained', this.classTrainedEvent);
@@ -195,14 +195,14 @@ class Wizard {
         },
         {
           name: "purpleTrained",
-          text: ' You should see the cat GIF when you hold up the cat image, and the rabbit GIF when it’s down. Try it.',
+          text: 'You should see the cat GIF when you hold up the cat figure, and the robot GIF when you don´t show it. Try it.',
           execute: () => {
             GLOBALS.learningSection.dehighlightClass(1);
           }
         },
         { text: 'Great! Looks like it’s working.' },
         {
-          text: "Now pick up and hold the stick figure with the dog image in front of the camera and hold the orange button for a couple seconds.",
+          text: "Now pick up the stick figure with the dog image and hold it in front of the camera. While doing so, press the orange button for a couple of seconds.",
           waitForEvent: true,
           execute: () => {
             window.addEventListener('class-trained', this.classTrainedEvent);
@@ -212,23 +212,23 @@ class Wizard {
         },
         {
           name: "orangeTrained",
-          text: 'You should now see the cat GIF when you hold the cat image and the dog GIF when you hold the dog image. When they’re down you should see the rabbit GIF.'
+          text: 'You should now see the cat GIF when you hold the cat image and the dog GIF when you hold the dog image. When they’re down you should see the robot GIF.'
         },
-        { text: 'You’ve now fully teached the machine!' }
+        { text: 'You’ve now fully trained the artificial intelligence!' }
       ]
     });
 
-    // Section 4 - Validation of datasets
+    // Section 4 - Testing the AI model
     this.sections.push({
-      title: "4. Validation of datasets",
+      title: "4. Testing the AI model",
       steps: [
         { text: 'See if the machine will now recognize similar images. Hold the image of the dog in the snow and the image of the mountain lion in front of the camera.'},
         { text: 'Great! Looks like it’s working.' },
         { text: 'Is the machine foolproof? Try to hold the image of the wolf in front of the camera.' },
         { text: 'You will see either the cat GIF or the dog GIF.' },
-        { text: 'This is because the machine can not distinguish between the cat and the dog, since they are not representative for the wolf.' },
-        { text: 'Machines need large data-sets to be able to recognize a larger variety of images.' },
-        { text: 'Thanks for playing around. Continue teaching your machine whatever you want, or continue the exhbition. ' },
+        { text: 'The machine cannot decide between cat and dog, because it has no understanding of "wolf". It only knows the colors and patterns that you have taught it before.' },
+        { text: 'Machines need large datasets and more categories to be able to recognize a larger variety of images.' },
+        { text: 'Thanks for teaching … and learning. You may continue playing with the program and teach it whatever you like: people, body parts, facial expression, ...' }
       ]
     });
 
