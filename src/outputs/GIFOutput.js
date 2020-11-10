@@ -31,10 +31,10 @@ class GIFOutput {
 			this.gifCanvas = new GifCanvas();
 		}
 
-		// Bunny
+		// Robot
 		this.defaultGifs.push({
-			still: 'https://media0.giphy.com/media/I3BLTIP5Gv6h2/giphy-downsized_s.gif',
-			gif: 'https://media0.giphy.com/media/I3BLTIP5Gv6h2/200w.gif'
+			still: 'https://media0.giphy.com/media/tczJoRU7XwBS8/giphy-downsized_s.gif',
+			gif: 'https://media0.giphy.com/media/tczJoRU7XwBS8/200w.gif'
 		});
 
 		// Cat
