@@ -38,7 +38,8 @@ function init() {
     NodeList.prototype.forEach = Array.prototype.forEach;
 	}
 
-  GLOBALS.browserUtils = new BrowserUtils();
+	GLOBALS.browserUtils = new BrowserUtils();
+  GLOBALS.language = localStorage.getItem("language") || "de";
   GLOBALS.launchScreen = new LaunchScreen();
 
   GLOBALS.learningSection = new LearningSection(document.querySelector('#learning-section'));
@@ -53,6 +54,8 @@ function init() {
 		GLOBALS.isBackFacingCam = true;
 	}
 
+	initLanguageToggle();
+
 	// Camera status messages per browser
 	if (GLOBALS.browserUtils.isChrome && !GLOBALS.browserUtils.isEdge) {
 		document.querySelector('.input__media__activate').innerHTML = 'To teach your machine, <span class="input__media__activate--desktop"> you need to click up here to turn on your camera and then <a href="#">refresh the page</a>.</span><span class="input__media__activate--mobile"> you need to <a href="#">refresh the page</a> and allow camera access.</span></p>';
@@ -62,6 +65,37 @@ function init() {
 	}else if (GLOBALS.browserUtils.isFirefox) {
 		document.querySelector('.input__media__activate').innerHTML = 'To teach your machine, you need to turn on your camera. To do this you need to click this icon <img class="camera-icon" src="assets/ff-camera-icon.png"> to grant access and <a href="#">refresh the page</a>.';
 	}
+}
+
+function initLanguageToggle() {
+	// There are language buttons at the top of both the launch screen and the main machine interface.
+	const languageButtons = document.querySelectorAll(".languageSlider");
+
+	const updateButtonStatus = function() {
+    for (let i = 0; i < languageButtons.length; i++) {
+      languageButtons[i].classList.toggle("right", GLOBALS.language === "de");
+    }
+  };
+
+  updateButtonStatus();
+  for (let i = 0; i < languageButtons.length; i++) {
+    const languageButton = languageButtons[i];
+    languageButton.addEventListener('click',
+      function toggleLanguage(event) {
+        GLOBALS.language = GLOBALS.language === "de" ? "en" : "de";
+        localStorage.setItem("language", GLOBALS.language);
+        updateButtonStatus();
+
+        GLOBALS.launchScreen.updateLanguage();
+        GLOBALS.wizard.updateLanguage();
+        GLOBALS.inputSection.updateLanguage();
+        GLOBALS.learningSection.updateLanguage();
+        GLOBALS.outputSection.updateLanguage();
+
+        event.stopPropagation();
+			}
+    );
+  }
 }
 
 window.addEventListener('load', init);

@@ -13,120 +13,131 @@
 // limitations under the License.
 
 class OutputSection {
-    constructor(element) {
-        this.element = element;
+  constructor(element) {
+    this.element = element;
 
-        const outputs = {
-            GIFOutput: new GIFOutput(),
-            SoundOutput: new SoundOutput(document.querySelector('#SoundOutput')),
-            SpeechOutput: new SpeechOutput()
-        };
-        GLOBALS.soundOutput = outputs.SoundOutput;
+    const outputs = {
+      GIFOutput: new GIFOutput(),
+      SoundOutput: new SoundOutput(document.querySelector('#SoundOutput')),
+      SpeechOutput: new SpeechOutput()
+    };
+    GLOBALS.soundOutput = outputs.SoundOutput;
 
-        this.classNames = GLOBALS.classNames;
-        GLOBALS.predicting = true;
+    this.classNames = GLOBALS.classNames;
+    GLOBALS.predicting = true;
 
-        this.outputs = outputs;
-        this.loadedOutputs = [];
+    this.outputs = outputs;
+    this.loadedOutputs = [];
 
-        let outputLinks = element.querySelectorAll('.output_selector__option');
-        outputLinks.forEach((link) => {
-            link.addEventListener('click', this.changeOutput.bind(this));
-        });
-        this.currentLink = element.querySelector('.output_selector__option--selected');
+    let outputLinks = element.querySelectorAll('.output_selector__option');
+    outputLinks.forEach((link) => {
+      link.addEventListener('click', this.changeOutput.bind(this));
+    });
+    this.currentLink = element.querySelector('.output_selector__option--selected');
 
-        this.outputContainer = document.querySelector('#output-player');
-        this.currentOutput = null;
-        this.currentLink.click();
+    this.outputContainer = document.querySelector('#output-player');
+    this.currentOutput = null;
+    this.currentLink.click();
 
-        this.arrow = new HighlightArrow(1);
+    this.arrow = new HighlightArrow(1);
 
-        TweenMax.set(this.arrow.element, {
-            rotation: -50,
-            scale: -0.8,
-            x: 140,
-            y: -100
-        });
-        this.element.appendChild(this.arrow.element);
+    TweenMax.set(this.arrow.element, {
+      rotation: -50,
+      scale: -0.8,
+      x: 140,
+      y: -100
+    });
+    this.element.appendChild(this.arrow.element);
+
+    this.updateLanguage();
+  }
+
+  enable() {
+    this.element.classList.remove('section--disabled');
+  }
+
+  highlight() {
+    this.arrow.show();
+    TweenMax.from(this.arrow.element, 0.3, { opacity: 0 });
+  }
+
+  dehighlight() {
+    TweenMax.killTweensOf(this.arrow.element);
+    this.arrow.hide();
+  }
+
+  disable() {
+    this.element.classList.add('section--disabled');
+  }
+
+  dim() {
+    this.element.classList.add('dimmed');
+  }
+
+  undim() {
+    this.element.classList.remove('dimmed');
+  }
+
+  changeOutput(event) {
+    if (this.currentLink) {
+      this.currentLink.classList.remove('output_selector__option--selected');
     }
 
-    enable() {
-        this.element.classList.remove('section--disabled');
+    this.currentLink = event.target;
+    this.currentLink.classList.add('output_selector__option--selected');
+    let outputId = this.currentLink.id;
+
+    if (this.currentOutput) {
+      this.currentOutput.stop();
+      this.currentOutput = null;
     }
 
-    highlight() {
-        this.arrow.show();
-        TweenMax.from(this.arrow.element, 0.3, {opacity: 0});
+    if (this.outputs[outputId]) {
+      this.currentOutput = this.outputs[outputId];
     }
 
-    dehighlight() {
-        TweenMax.killTweensOf(this.arrow.element);
-        this.arrow.hide();
+    if (this.currentOutput) {
+      this.outputContainer.appendChild(this.currentOutput.element);
+      this.currentOutput.start();
     }
 
-    disable() {
-        this.element.classList.add('section--disabled');
+    gtag('event', 'select_output', { 'id': outputId });
+  }
+
+  toggleSoundOutput(play) {
+    if (this.currentOutput.id === 'SoundOutput' && play) {
+      GLOBALS.soundOutput.playCurrentSound();
+    } else if (this.currentOutput.id === 'SoundOutput' && !play) {
+      GLOBALS.soundOutput.pauseCurrentSound();
     }
+  }
 
-    dim() {
-        this.element.classList.add('dimmed');
+  startWizardMode() {
+    this.broadcastEvents = true;
+  }
+
+  stopWizardMode() {
+    this.broadcastEvents = false;
+  }
+
+  trigger(id) {
+    let index = this.classNames.indexOf(id);
+    this.currentOutput.trigger(index);
+
+    if (this.broadcastEvents) {
+      let event = new CustomEvent('class-triggered', { detail: { id: id } });
+      window.dispatchEvent(event);
     }
+  }
 
-    undim() {
-        this.element.classList.remove('dimmed');
-    }
-
-    changeOutput(event) {
-        if (this.currentLink) {
-            this.currentLink.classList.remove('output_selector__option--selected');
-        }
-
-        this.currentLink = event.target;
-        this.currentLink.classList.add('output_selector__option--selected');
-        let outputId = this.currentLink.id;
-
-        if (this.currentOutput) {
-            this.currentOutput.stop();
-            this.currentOutput = null;
-        }
-
-        if (this.outputs[outputId]) {
-            this.currentOutput = this.outputs[outputId];
-        }
-
-        if (this.currentOutput) {
-            this.outputContainer.appendChild(this.currentOutput.element);
-            this.currentOutput.start();
-        }
-
-        gtag('event', 'select_output', {'id': outputId});
-    }
-
-    toggleSoundOutput(play) {
-        if (this.currentOutput.id === 'SoundOutput' && play) {
-            GLOBALS.soundOutput.playCurrentSound();
-        }else if (this.currentOutput.id === 'SoundOutput' && !play) {
-            GLOBALS.soundOutput.pauseCurrentSound();
-        }
-    }
-
-    startWizardMode() {
-        this.broadcastEvents = true;
-    }
-
-    stopWizardMode() {
-        this.broadcastEvents = false;
-    }
-
-    trigger(id) {
-        let index = this.classNames.indexOf(id);
-        this.currentOutput.trigger(index);
-
-        if (this.broadcastEvents) {
-            let event = new CustomEvent('class-triggered', {detail: {id: id}});
-            window.dispatchEvent(event);
-        }
-    }
+  updateLanguage() {
+    const titleText = {
+      en: "Output",
+      de: "Ausgabe"
+    };
+    const titleElement = this.element.querySelector('.section__title');
+    titleElement.textContent = titleText[GLOBALS.language];
+  }
 }
 
 import TweenMax from 'gsap';

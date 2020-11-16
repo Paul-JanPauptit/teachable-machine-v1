@@ -25,13 +25,22 @@ class Wizard {
 
     // Section 1 - Introduction
     this.sections.push({
-      title: "1. Interface introduction",
+      title: {
+        en: "1. Interface introduction",
+        de: "1. Einführung"
+      },
       steps: [
         {
-          text: 'This experiment lets you explore how machine learning works.'
+          text: {
+            en: 'This experiment lets you explore how machine learning works.',
+            de: "Mit diesem Experiment verstehen Sie, wie maschinelles Lernen funktioniert."
+          }
         },
         {
-          text: 'You can teach the machine using the camera.',
+          text: {
+            en: 'You can teach the machine using the camera.',
+            de: "2. Sie lehren die Maschine über die eingebaute Kamera."
+          },
           execute: () => {
             if (localStorage.getItem('webcam_status') === null) {
               this.play("cameraInit");
@@ -50,7 +59,11 @@ class Wizard {
           execute: () => {
             /*eslint-disable */
             if (!GLOBALS.browserUtils.isMobile && !GLOBALS.isCamGranted) {
-              this.setText('First, click allow to turn on your camera.');
+              const text = {
+                en: 'First, click allow to turn on your camera.',
+                de: "Klicken Sie zuerst auf Zulassen, um Ihre Kamera einzuschalten."
+              };
+              this.setText(text);
             } else {
               this.play('cameraStart');
             }
@@ -65,7 +78,10 @@ class Wizard {
         },
         {
           duration: 20.6 - 16.3,
-          text: 'Here is your input. You should see yourself.',
+          text: {
+            en: 'Here is your input. You should see yourself.',
+            de: "Hier ist Ihre Eingabe. Sie sollten sich selbst sehen."
+          },
           execute: () => {
             GLOBALS.inputSection.enable();
             GLOBALS.inputSection.highlight();
@@ -78,7 +94,10 @@ class Wizard {
 
           duration: 1.5,
           groupWithNext: true,
-          text: 'Here are three classes: green, purple, orange.',
+          text: {
+            en: 'Here are three classes: green, purple, orange.',
+            de: "Es gibt drei Klassen: grün, violett, orange. "
+          },
           execute: () => {
             GLOBALS.inputSection.dehighlight();
             GLOBALS.inputSection.dim();
@@ -122,7 +141,10 @@ class Wizard {
         },
         {
           duration: 3,
-          text: "Here is the output, where the machine responds.",
+          text: {
+            en: "Here is the output, where the machine responds.",
+            de: "Das ist die Ausgabe, mit der die Maschine antwortet."
+          },
           execute: () => {
             if (GLOBALS.browserUtils.isMobile) {
               TweenLite.to(window, 0, { scrollTo: 660 });
@@ -134,13 +156,19 @@ class Wizard {
           }
         },
         {
-          text: "It’s set to respond with one of these GIFs.",
+          text: {
+            en: "It’s set to respond with one of these GIFs.",
+            de: "Sie ist so eingestellt, dass sie mit einem dieser GIFs antwortet."
+          },
           execute: () => {
             GLOBALS.outputSection.dehighlight();
           }
         },
         {
-          text: "First, we’re going to teach it to respond with the robot GIF.",
+          text: {
+            en: "First, we’re going to teach it to respond with the robot GIF.",
+            de: "Zuerst werden wir dem Programm beibringen, mit dem Roboter-GIF zu antworten."
+          },
           execute: () => {
             GLOBALS.inputSection.undim();
             GLOBALS.inputSection.enable();
@@ -149,17 +177,21 @@ class Wizard {
             GLOBALS.outputSection.undim();
           }
         }
-
-
       ]
     });
 
     // Section 2 - Teaching first dataset
     this.sections.push({
-      title: "2. Teaching first dataset",
+      title: {
+        en: "2. Teaching first dataset",
+        de: "2. Ersten Datensatz lehren"
+      },
       steps: [
         {
-          text: "Stand in front of the camera and hold this green button for a couple of seconds.",
+          text: {
+            en: "Stand in front of the camera and hold this green button for a couple of seconds.",
+            de: "Stellen Sie sich vor die Kamera und halten Sie diesen grünen Knopf einige Sekunden lang gedrückt. "
+          },
           waitForEvent: true,
           execute: () => {
             window.addEventListener('class-trained', this.classTrainedEvent);
@@ -169,23 +201,45 @@ class Wizard {
         },
         {
           name: "greenTrained",
-          text: 'You should now see the green bar and the robot GIF.',
+          text: {
+            en: 'You should now see the green bar and the robot GIF.',
+            de: "Sie sollten jetzt die grüne Leiste und das Roboter-GIF sehen."
+          },
           execute: () => {
             GLOBALS.learningSection.dehighlightClass(0);
           }
         },
-        { text: 'No matter what you do, you will always see the robot GIF.' },
-        { text: "That’s because the machine processes your input and picks which class was trained on similar images to the current one." },
-        { text: 'But since you’ve only trained the green class, it always picks that one. That’s why you need to teach it a second class.' }
+        { text: {
+          en: 'No matter what you do, you will always see the robot GIF.',
+          de: "Egal, was Sie tun, es wird immer das Roboter-GIF angezeigt werden."
+        } },
+        {
+          text: {
+            en: "That’s because the machine processes your input and picks which class was trained on similar images to the current one.",
+            de: "Das liegt daran, dass die Maschine Ihre Eingabe verarbeitet und auswählt, welche Klasse mit Bildern trainiert wurde, die dem aktuellen am ähnlichsten sehen."
+          }
+        },
+        {
+          text: {
+            en: 'But since you’ve only trained the green class, it always picks that one. That’s why you need to teach it a second class.',
+            de: "Aber da Sie nur die grüne Klasse trainiert haben, wählt die Maschine immer diese aus. Deshalb müssen Sie ihr eine zweite Klasse beibringen."
+          }
+        }
       ]
     });
 
     // Section 3 - Teaching to distinguish cats and dogs
     this.sections.push({
-      title: "3. Teaching to distinguish cats and dogs",
+      title: {
+        en: "3. Teaching to distinguish cats and dogs",
+        de: "3. Katzen und Hunde unterscheiden lernen"
+      },
       steps: [
         {
-          text: "Now pick up the stick figure with the cat image and hold it in front of the camera. While doing so, press this purple button for a couple of seconds.",
+          text: {
+            en: "Now pick up the stick figure with the cat image and hold it in front of the camera. While doing so, press this purple button for a couple of seconds.",
+            de: "Nehmen Sie nun das Schildchen mit dem Katzenbild und halten Sie es vor die Kamera. Drücken Sie dabei einige Sekunden lang auf das violette Feld."
+          },
           waitForEvent: true,
           execute: () => {
             window.addEventListener('class-trained', this.classTrainedEvent);
@@ -195,14 +249,25 @@ class Wizard {
         },
         {
           name: "purpleTrained",
-          text: 'You should see the cat GIF when you hold up the cat figure, and the robot GIF when you don´t show it. Try it.',
+          text: {
+            en: 'You should see the cat GIF when you hold up the cat figure, and the robot GIF when you don´t show it. Try it.',
+            de: "Sie sollten das Katzen-GIF sehen, wenn Sie die Katzenfigur hochhalten, und das Roboter-GIF, wenn Sie es nicht tun. Versuchen Sie es."
+          },
           execute: () => {
             GLOBALS.learningSection.dehighlightClass(1);
           }
         },
-        { text: 'Great! Looks like it’s working.' },
         {
-          text: "Now pick up the stick figure with the dog image and hold it in front of the camera. While doing so, press the orange button for a couple of seconds.",
+          text: {
+            en: 'Great! Looks like it’s working.',
+            de: "Großartig! Sieht aus, als würde es funktionieren."
+          }
+        },
+        {
+          text: {
+            en: "Now pick up the stick figure with the dog image and hold it in front of the camera. While doing so, press the orange button for a couple of seconds.",
+            de: "Nehmen Sie nun das Schildchen mit dem Hundebild und halten Sie es vor die Kamera. Drücken Sie dabei einige Sekunden lang das orangene Feld."
+          },
           waitForEvent: true,
           execute: () => {
             window.addEventListener('class-trained', this.classTrainedEvent);
@@ -212,23 +277,71 @@ class Wizard {
         },
         {
           name: "orangeTrained",
-          text: 'You should now see the cat GIF when you hold the cat image and the dog GIF when you hold the dog image. When they’re down you should see the robot GIF.'
+          text: {
+            en: 'You should now see the cat GIF when you hold the cat image and the dog GIF when you hold the dog image. When they’re down you should see the robot GIF.',
+            de: "Sie sollten jetzt das Katzen-GIF sehen, wenn Sie das Katzenbild hochhalten, und das Hunde-GIF, wenn Sie das Hundebild hochhalten. Wenn Sie keines zeigen, sollten Sie das Roboter-GIF sehen."
+          }
         },
-        { text: 'You’ve now fully trained the artificial intelligence!' }
+        {
+          text: {
+            en: 'You’ve now fully trained the artificial intelligence!',
+            de: "Sie haben die künstliche Intelligenz jetzt vollständig trainiert!"
+          }
+        }
       ]
     });
 
     // Section 4 - Testing the AI model
     this.sections.push({
-      title: "4. Testing the AI model",
+      title: {
+        en: "4. Testing the AI model",
+        de: "4. Das KI-Modell testen"
+      },
       steps: [
-        { text: 'See if the machine will now recognize similar images. Hold the image of the dog in the snow and the image of the mountain lion in front of the camera.'},
-        { text: 'Great! Looks like it’s working.' },
-        { text: 'Is the machine foolproof? Try to hold the image of the wolf in front of the camera.' },
-        { text: 'You will see either the cat GIF or the dog GIF.' },
-        { text: 'The machine cannot decide between cat and dog, because it has no understanding of "wolf". It only knows the colors and patterns that you have taught it before.' },
-        { text: 'Machines need large datasets and more categories to be able to recognize a larger variety of images.' },
-        { text: 'Thanks for teaching … and learning. You may continue playing with the program and teach it whatever you like: people, body parts, facial expression, ...' }
+        {
+          text: {
+            en:
+              'See if the machine will now recognize similar images. Hold the image of the dog in the snow and the image of the mountain lion in front of the camera.',
+            de:
+              "Überprüfen Sie, wie das Gerät ähnliche Bilder einordnet. Halten Sie das Bild des Hundes im Schnee und das Bild des Berglöwen in die Kamera."
+          }
+        },
+        {
+          text: {
+            en: 'Great! Looks like it’s working.',
+            de: "Großartig! Sieht aus, als ob es funktioniert."
+          }
+        },
+        {
+          text: {
+            en: 'Is the machine foolproof? Try to hold the image of the wolf in front of the camera.',
+            de: "Aber ist die Maschine unfehlbar? Halten Sie das Bild des Wolfes in die Kamera."
+          }
+        },
+        {
+          text: {
+            en: 'You will see either the cat GIF or the dog GIF.',
+            de: "Sie werden entweder das Katzen-GIF oder das Hunde-GIF sehen."
+          }
+        },
+        {
+          text: {
+            en: 'The machine cannot decide between cat and dog, because it has no understanding of "wolf". It only knows the colors and patterns that you have taught it before.',
+            de: 'Die Maschine kann sich nicht zwischen Katze und Hund entscheiden, da sie kein Verständnis von "Wolf" besitzt. Sie kennt nur die Farben und Muster, die Sie ihr vorher beigebracht haben.'
+          }
+        },
+        {
+          text: {
+            en: 'Machines need large datasets and more categories to be able to recognize a larger variety of images.',
+            de: "Computerprogramme brauchen große Datensätze und mehr Kategorien, um eine größere Vielfalt von Bildern erkennen zu können."
+          }
+        },
+        {
+          text: {
+            en: 'Thanks for teaching … and learning. You may continue playing with the program and teach it whatever you like: people, body parts, facial expression, ...',
+            de: 'Danke für das Lehren ... und Lernen. Sie können nun weiter mit dem Programm spielen und ihm beibringen, was immer Sie wollen: Personen, Körperteile, Gesichtsausdrücke, ...'
+          }
+        }
       ]
     });
 
@@ -323,7 +436,7 @@ class Wizard {
     }
   }
 
-  documentClick(event) {
+    documentClick(event) {
     this.lastActivityTime = Date.now();
     // Allow the user to click anywhere on the screen, if we are waiting for the next step. 
     if (this.waitingForNextClick)
@@ -355,7 +468,11 @@ class Wizard {
     let numSamples = event.detail.numSamples;
 
     if (numSamples < 30) {
-      this.setText("Your machine will work best with at least 30 examples per class. Try recording some more.");
+      var text = {
+        en: "Your machine will work best with at least 30 examples per class. Try recording some more.",
+        de: "Ihre Maschine funktioniert am besten mit mindestens 30 Beispielen pro Klasse. Versuchen Sie, noch einige mehr aufzunehmen."
+      };
+      this.setText(text);
       return;
     }
 
@@ -512,14 +629,28 @@ class Wizard {
   }
 
   setText(message, title) {
-    this.textContainer.textContent = message;
+    this.message = message;
+    this.title = title;
+
+    var messageText = message ? message[GLOBALS.language] : "";
+    this.textContainer.textContent = messageText;
 
     if (title)
-      this.titleContainer.textContent = title;
+      this.titleContainer.textContent = title[GLOBALS.language];
 
-    if (message.length > 0) {
+    if (messageText.length > 0) {
       this.timerFill.style.width = 0 + 'px';
     }
+  }
+
+  updateLanguage() {
+    this.setText(this.message, this.title);
+
+    const nextButtonCaption = {
+      en: "Click to continue",
+      de: "Klicken Sie um Fortzufahren"
+    };
+    this.nextButton.textContent = nextButtonCaption[GLOBALS.language];
   }
 
 
@@ -540,11 +671,11 @@ class Wizard {
   }
 
   start() {
-    let that = this;
     this.wizardRunning = true;
     this.soundButton.style.display = 'block';
     this.play();
     this.startAudioTimer();
+    this.updateLanguage();
     GLOBALS.launchScreen.destroy();
     gtag('event', 'wizard_start');
   }

@@ -13,68 +13,79 @@
 // limitations under the License.
 
 class LaunchScreen {
-    constructor() {
-        this.element = document.querySelector('.intro');
+  constructor() {
+    this.element = document.querySelector('.intro');
 
-        this.startButton = document.querySelector('#start-tutorial-button');
+    this.startButton = document.querySelector('#start-tutorial-button');
 
-        this.startButton.addEventListener('click', this.startClick.bind(this));
-        this.startButton.addEventListener('touchend', this.startClick.bind(this));
+    this.startButton.addEventListener('click', this.startClick.bind(this));
+    this.startButton.addEventListener('touchend', this.startClick.bind(this));
+
+    this.updateLanguage();
+  }
+
+  skipClick(event) {
+    event.preventDefault();
+    let intro = document.querySelector('.intro');
+    let offset = intro.offsetHeight;
+    GLOBALS.wizard.skip();
+    gtag('event', 'wizard_skip');
+
+    if (GLOBALS.browserUtils.isMobile) {
+      let msg = new SpeechSynthesisUtterance();
+      msg.text = ' ';
+      window.speechSynthesis.speak(msg);
+
+      GLOBALS.inputSection.createCamInput();
+      GLOBALS.camInput.start();
+      let event = new CustomEvent('mobileLaunch');
+      window.dispatchEvent(event);
     }
-
-    skipClick(event) {
-        event.preventDefault();
-        let intro = document.querySelector('.intro');
-        let offset = intro.offsetHeight;
-        GLOBALS.wizard.skip();
-        gtag('event', 'wizard_skip');        
-
-        if (GLOBALS.browserUtils.isMobile) {
-            let msg = new SpeechSynthesisUtterance();
-            msg.text = ' ';
-            window.speechSynthesis.speak(msg);
-
-            GLOBALS.inputSection.createCamInput();
-            GLOBALS.camInput.start();
-            let event = new CustomEvent('mobileLaunch');
-            window.dispatchEvent(event);
+    TweenMax.to(intro, 0.5, {
+      y: -offset,
+      onComplete: () => {
+        this.destroy();
+        if (!GLOBALS.browserUtils.isMobile) {
+          GLOBALS.wizard.startCamera();
         }
-        TweenMax.to(intro, 0.5, {
-            y: -offset,
-            onComplete: () => {
-                this.destroy();
-                if (!GLOBALS.browserUtils.isMobile) {
-                    GLOBALS.wizard.startCamera();
-                }
-            }
-        });
+      }
+    });
+  }
+
+  destroy() {
+    document.body.classList.remove('no-scroll');
+    this.element.style.display = 'none';
+
+  }
+
+  startClick() {
+    let intro = document.querySelector('.intro');
+    let offset = intro.offsetHeight;
+    if (GLOBALS.browserUtils.isMobile || GLOBALS.browserUtils.isSafari) {
+      GLOBALS.inputSection.createCamInput();
+      GLOBALS.camInput.start();
+      GLOBALS.wizard.touchPlay();
+      let event = new CustomEvent('mobileLaunch');
+      window.dispatchEvent(event);
     }
 
-    destroy() {
-        document.body.classList.remove('no-scroll');
-        this.element.style.display = 'none';        
+    TweenMax.to(intro, 0.5, {
+      y: -offset,
+      onComplete: () => {
+        this.destroy();
+        GLOBALS.wizard.start();
+      }
+    });
+  }
 
-    }
-
-    startClick() {
-        let intro = document.querySelector('.intro');
-        let offset = intro.offsetHeight;
-        if (GLOBALS.browserUtils.isMobile || GLOBALS.browserUtils.isSafari) {
-            GLOBALS.inputSection.createCamInput();
-            GLOBALS.camInput.start();
-            GLOBALS.wizard.touchPlay();
-            let event = new CustomEvent('mobileLaunch');
-            window.dispatchEvent(event);
-        }
-
-        TweenMax.to(intro, 0.5, {
-            y: -offset,
-            onComplete: () => {
-                this.destroy();
-                GLOBALS.wizard.start();             
-            }
-        });
-    }
+  updateLanguage() {
+    const titleText = {
+      en: "Click start to begin training a program.",
+      de: "Klicken Sie auf Start, um mit dem Training eines Programms zu beginnen."
+    };
+    const titleElement = this.element.querySelector('.intro__text');
+    titleElement.textContent = titleText[GLOBALS.language];
+  }
 }
 
 import TweenMax from 'gsap';
