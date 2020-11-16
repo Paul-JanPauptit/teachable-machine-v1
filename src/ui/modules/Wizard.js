@@ -39,7 +39,7 @@ class Wizard {
         {
           text: {
             en: 'You can teach the machine using the camera.',
-            de: "2. Sie lehren die Maschine über die eingebaute Kamera."
+            de: "Sie lehren die Maschine über die eingebaute Kamera."
           },
           execute: () => {
             if (localStorage.getItem('webcam_status') === null) {
@@ -436,7 +436,12 @@ class Wizard {
     }
   }
 
-    documentClick(event) {
+  documentClick(event) {
+    const isPrevented = (GLOBALS.preventDocumentClick === true);
+    GLOBALS.preventDocumentClick = false;
+    if (isPrevented)
+      return;
+
     this.lastActivityTime = Date.now();
     // Allow the user to click anywhere on the screen, if we are waiting for the next step. 
     if (this.waitingForNextClick)

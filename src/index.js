@@ -80,7 +80,9 @@ function initLanguageToggle() {
   updateButtonStatus();
   for (let i = 0; i < languageButtons.length; i++) {
     const languageButton = languageButtons[i];
-    languageButton.addEventListener('click',
+
+    // Mousedown because we need to be able to prevent documentclicks in the wizard
+    languageButton.addEventListener('mousedown',
       function toggleLanguage(event) {
         GLOBALS.language = GLOBALS.language === "de" ? "en" : "de";
         localStorage.setItem("language", GLOBALS.language);
@@ -92,8 +94,9 @@ function initLanguageToggle() {
         GLOBALS.learningSection.updateLanguage();
         GLOBALS.outputSection.updateLanguage();
 
-        event.stopPropagation();
-			}
+        // Hacky, but it works
+        GLOBALS.preventDocumentClick = true;
+      }
     );
   }
 }
