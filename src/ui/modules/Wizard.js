@@ -68,9 +68,9 @@ class Wizard {
                 de: "Klicken Sie zuerst auf Zulassen, um Ihre Kamera einzuschalten."
               };
               this.setText(text);
-            } else {
-              this.play('cameraStart');
             }
+            else
+              this.play('cameraStart');
             /* eslint-enable */
           }
         },
@@ -671,11 +671,11 @@ class Wizard {
     let that = this;
     if (event.detail.granted === true) {
       localStorage.setItem('webcam_status', 'granted');
-      this.play(2);
+      this.play("cameraStart");
       window.removeEventListener('webcam-status', this.webcamEvent);
     } else {
       localStorage.setItem('webcam_status', 'denied');
-      this.play(7);
+      this.play("cameraDenied");
     }
   }
 
