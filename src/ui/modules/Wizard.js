@@ -50,7 +50,11 @@ class Wizard {
               GLOBALS.camInput.start();
               this.play("cameraStart");
             } else if (localStorage.getItem('webcam_status') === 'denied') {
-              this.play("cameraDenied");
+              const text = {
+                en: 'Seems like the camera isn’t working. It might be your browser or camera settings.',
+                de: "Scheint, als ob die Kamera nicht funktioniert. Dies können Ihre Browser- oder Kameraeinstellungen sein."
+              };
+              this.setText(text);
             }
           }
         },
