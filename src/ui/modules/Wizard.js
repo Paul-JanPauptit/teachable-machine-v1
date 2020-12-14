@@ -382,6 +382,9 @@ class Wizard {
     this.restartButton = document.querySelector('#restart-machine-button');
     this.restartButton.addEventListener('click', () => { this.restart(); });
 
+    this.restartButtonSmall = document.querySelector('#restart-machine-button-small');
+    this.restartButtonSmall.addEventListener('click', () => { this.restart(); });
+
     this.classTrainedEvent = this.classTrained.bind(this);
 
     this.numTriggered = 0;
@@ -687,6 +690,9 @@ class Wizard {
     this.updateLanguage();
     GLOBALS.launchScreen.destroy();
     gtag('event', 'wizard_start');
+
+    // Restart the wizard whenever there is 2 minutes of inactivity 
+    setTimeout(this.checkAutoRestart.bind(this), 1000); 
   }
 
   restart() {
@@ -698,7 +704,7 @@ class Wizard {
 
   checkAutoRestart() {
     var inactiveTime = (Date.now() - this.lastActivityTime) / 1000; 
-    if (inactiveTime > 30) // in seconds
+    if (inactiveTime > 2 * 60) // 2 minutes in seconds
       this.restart();
     else 
       setTimeout(this.checkAutoRestart.bind(this), 1000);
@@ -796,8 +802,6 @@ class Wizard {
     document.body.removeEventListener('mouseup', this.documentClickEvent, true);
 
     this.restartButton.style.display = 'inline-block';
-
-    setTimeout(this.checkAutoRestart.bind(this), 1000); 
   }
 
 }
