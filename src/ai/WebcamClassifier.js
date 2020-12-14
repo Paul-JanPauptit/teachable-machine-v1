@@ -82,18 +82,22 @@ export default class WebcamClassifier {
       video = {facingMode: (GLOBALS.isBackFacingCam) ? 'environment' : 'user'};
     }
 
+    // HACK, PJ: Specific device ID to make sure we select the RGB camera and not the depth cam
+    let deviceId = "308aa7a930ba9f4c4277e0b577588664ea6f5e0310123d15016e8af9b5e399a9";
+
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       navigator.mediaDevices.getUserMedia(
       {
-        video: video,
-        audio: (GLOBALS.browserUtils.isChrome && !GLOBALS.browserUtils.isMobile)
+        video: { deviceId: deviceId },
+        audio: false // Tinker branch runs on a camera without audio support
       }).
       then((stream) => {
         GLOBALS.isCamGranted = true;
-        if ((GLOBALS.browserUtils.isChrome && !GLOBALS.browserUtils.isMobile)) {
-          GLOBALS.audioContext.createMediaStreamSource(stream);
-          GLOBALS.stream = stream;
-        }
+        // Tinker branch runs on a camera without audio support
+        //if ((GLOBALS.browserUtils.isChrome && !GLOBALS.browserUtils.isMobile)) {
+        //  GLOBALS.audioContext.createMediaStreamSource(stream);
+        //  GLOBALS.stream = stream;
+        //}
         this.activateWebcamButton.style.display = 'none';
         this.active = true;
         this.stream = stream;
