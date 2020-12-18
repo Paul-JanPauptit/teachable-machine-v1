@@ -162,7 +162,7 @@ class Wizard {
         {
           text: {
             en: "It’s set to respond with one of these GIFs.",
-            de: "Sie ist so eingestellt, dass sie mit einem dieser GIFs antwortet."
+            de: "Sie ist so eingestellt, dass sie mit einem dieser Bilder antwortet."
           },
           execute: () => {
             GLOBALS.outputSection.dehighlight();
@@ -171,7 +171,7 @@ class Wizard {
         {
           text: {
             en: "First, we’re going to teach it to respond with the robot GIF.",
-            de: "Zuerst werden wir dem Programm beibringen, mit dem Roboter-GIF zu antworten."
+            de: "Zuerst werden wir dem Programm beibringen, mit dem Roboter-Bild zu antworten."
           },
           execute: () => {
             GLOBALS.inputSection.undim();
@@ -207,7 +207,7 @@ class Wizard {
           name: "greenTrained",
           text: {
             en: 'You should now see the green bar and the robot GIF.',
-            de: "Sie sollten jetzt die grüne Leiste und das Roboter-GIF sehen."
+            de: "Sie sollten jetzt die grüne Leiste und das Roboter-Bild sehen."
           },
           execute: () => {
             GLOBALS.learningSection.dehighlightClass(0);
@@ -215,7 +215,7 @@ class Wizard {
         },
         { text: {
           en: 'No matter what you do, you will always see the robot GIF.',
-          de: "Egal, was Sie tun, es wird immer das Roboter-GIF angezeigt werden."
+          de: "Egal, was Sie tun, es wird immer das Roboter-Bild angezeigt werden."
         } },
         {
           text: {
@@ -255,7 +255,7 @@ class Wizard {
           name: "purpleTrained",
           text: {
             en: 'You should see the cat GIF when you hold up the cat figure, and the robot GIF when you don´t show it. Try it.',
-            de: "Sie sollten das Katzen-GIF sehen, wenn Sie die Katzenfigur hochhalten, und das Roboter-GIF, wenn Sie es nicht tun. Versuchen Sie es."
+            de: "Sie sollten das Katzen-Bild sehen, wenn Sie die Katzenfigur hochhalten, und das Roboter-Bild, wenn Sie es nicht tun. Versuchen Sie es."
           },
           execute: () => {
             GLOBALS.learningSection.dehighlightClass(1);
@@ -283,7 +283,7 @@ class Wizard {
           name: "orangeTrained",
           text: {
             en: 'You should now see the cat GIF when you hold the cat image and the dog GIF when you hold the dog image. When they’re down you should see the robot GIF.',
-            de: "Sie sollten jetzt das Katzen-GIF sehen, wenn Sie das Katzenbild hochhalten, und das Hunde-GIF, wenn Sie das Hundebild hochhalten. Wenn Sie keines zeigen, sollten Sie das Roboter-GIF sehen."
+            de: "Sie sollten jetzt das Katzen-Bild sehen, wenn Sie das Katzenfigur hochhalten, und das Hunde-Bild, wenn Sie das Hundefigur hochhalten. Wenn Sie keines zeigen, sollten Sie das Roboter-Bild sehen."
           }
         },
         {
@@ -325,7 +325,7 @@ class Wizard {
         {
           text: {
             en: 'You will see either the cat GIF or the dog GIF.',
-            de: "Sie werden entweder das Katzen-GIF oder das Hunde-GIF sehen."
+            de: "Sie werden entweder das Katzen-Bild oder das Hunde-Bild sehen."
           }
         },
         {
