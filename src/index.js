@@ -15,14 +15,11 @@
 import TweenMax from 'gsap';
 
 import GLOBALS from './config.js';
-import Button from './ui/components/Button.js';
-import IntroSection from './ui/modules/IntroSection.js';
 import InputSection from './ui/modules/InputSection.js';
 import LearningSection from './ui/modules/LearningSection.js';
 import OutputSection from './ui/modules/OutputSection.js';
-import Wizard from './ui/modules/Wizard.js';
+import MainController from './ui/modules/MainController.js';
 import Recording from './ui/modules/Recording';
-import LaunchScreen from './ui/modules/wizard/LaunchScreen.js';
 import BrowserUtils from './ui/components/BrowserUtils';
 
 function init() {
@@ -40,15 +37,14 @@ function init() {
 
 	GLOBALS.browserUtils = new BrowserUtils();
   GLOBALS.language = localStorage.getItem("language") || "de";
-  GLOBALS.launchScreen = new LaunchScreen();
-
+  
   GLOBALS.learningSection = new LearningSection(document.querySelector('#learning-section'));
 	GLOBALS.inputSection = new InputSection(document.querySelector('#input-section'));
 	GLOBALS.outputSection = new OutputSection(document.querySelector('#output-section'));
   
 	GLOBALS.inputSection.ready();
 	GLOBALS.learningSection.ready();
-	GLOBALS.wizard = new Wizard();
+	GLOBALS.mainController = new MainController();
 	GLOBALS.recordSection = new Recording(document.querySelector('#recording'));
 	if (localStorage.getItem('isBackFacingCam') && localStorage.getItem('isBackFacingCam') === 'true') {
 		GLOBALS.isBackFacingCam = true;
@@ -65,6 +61,8 @@ function init() {
 	}else if (GLOBALS.browserUtils.isFirefox) {
 		document.querySelector('.input__media__activate').innerHTML = 'To teach your machine, you need to turn on your camera. To do this you need to click this icon <img class="camera-icon" src="assets/ff-camera-icon.png"> to grant access and <a href="#">refresh the page</a>.';
 	}
+
+  GLOBALS.mainController.start();
 }
 
 function initLanguageToggle() {
@@ -89,7 +87,7 @@ function initLanguageToggle() {
         updateButtonStatus();
 
         GLOBALS.launchScreen.updateLanguage();
-        GLOBALS.wizard.updateLanguage();
+        GLOBALS.mainController.updateLanguage();
         GLOBALS.inputSection.updateLanguage();
         GLOBALS.learningSection.updateLanguage();
         GLOBALS.outputSection.updateLanguage();

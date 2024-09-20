@@ -13,12 +13,12 @@
 // limitations under the License.
 
 /* eslint-disable consistent-return, callback-return, no-case-declarations */
-import GLOBALS from './../../config.js';
+import GLOBALS from '../../config.js';
 import DummyAudio from '../components/DummyAudio.js';
 import TweenLite from 'gsap';
 
 
-class Wizard {
+class MainController {
   constructor() {
 
     this.sections = [];
@@ -688,7 +688,6 @@ class Wizard {
     this.play();
     this.startAudioTimer();
     this.updateLanguage();
-    GLOBALS.launchScreen.destroy();
     gtag('event', 'wizard_start');
 
     // Restart the wizard whenever there is 2 minutes of inactivity 
@@ -696,18 +695,18 @@ class Wizard {
   }
 
   restart() {
-    // Restart the complete machine. Not technically part of the wizard,
-    // but I keep changing the position of this button and for our purposes 
-    // the wizard has become more of a generic controller anyway :D
+    // Restart the complete machine. 
     window.location.reload();
   }
 
   checkAutoRestart() {
-    var inactiveTime = (Date.now() - this.lastActivityTime) / 1000; 
-    if (inactiveTime > 2 * 60) // 2 minutes in seconds
-      this.restart();
-    else 
-      setTimeout(this.checkAutoRestart.bind(this), 1000);
+    // Automatic restart is disabled in this version of the teachable machine
+    return false;
+    // var inactiveTime = (Date.now() - this.lastActivityTime) / 1000; 
+    // if (inactiveTime > 2 * 60) // 2 minutes in seconds
+    //   this.restart();
+    // else 
+    //   setTimeout(this.checkAutoRestart.bind(this), 1000);
   }
 
   next() {
@@ -806,5 +805,5 @@ class Wizard {
 
 }
 
-export default Wizard;
+export default MainController;
 /* eslint-enable consistent-return, callback-return, no-case-declarations */
