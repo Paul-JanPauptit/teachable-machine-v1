@@ -8,50 +8,44 @@
 	opacity: 0.3
 }
 
-.languageContainer {
+.language-select-container {
 	position: absolute;
-	top: 8px;
-	right: 20px;
-	height: 16px;
-	color: white;
+	top: 40px;
+	right: 40px;
+	z-index: 200;
 }
 
-.languageContainer .right .slider:before {
-  transform: translateX(26px);
+.language-select, .language-select-overlay {
+    font-size: 24px;
+    width: 170px;
 }
 
-.languageContainer .languageSlider {
-    display: inline-block;
-    min-width: 46px;
-    min-height: 16px;
-    position: relative;
-    top: 2px;
+.language-select {
+    padding: 4px 8px;
 }
 
-.languageContainer .slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  -webkit-transition: .4s;
-  transition: .4s;
-  border-radius: 34px;
+.language-select-overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-color: $color__theme--dark;
+    color: $color__black;
+    pointer-events: none;
+    padding: 4px 4px 5px 14px;
+    box-sizing: border-box;
+    text-align: left;	
 }
 
-.languageContainer .slider:before {
-  position: absolute;
-  content: "";
-  height: 12px;
-  width: 12px;
-  left: 4px;
-  bottom: 2px;
-  background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
-  border-radius: 50%;
+.language-select-arrow {
+	position: absolute;
+	top: 50%;
+	right: 10px;
+	transform: translateY(-50%);
+	width: 0;
+	height: 0;
+	border-left: 6px solid transparent;
+	border-right: 6px solid transparent;
+	border-top: 6px solid #333; 
 }
 
 .machine {
@@ -60,8 +54,7 @@
 	padding-bottom: space(10)
 	text-align: center
 
-	height: calc(100vh - 150px)
-
+	height: 100vh;
 	@extend .font__size--small
 	letter-spacing: 0.3px
 }

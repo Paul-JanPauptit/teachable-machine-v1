@@ -21,334 +21,6 @@ import TweenLite from 'gsap';
 class MainController {
   constructor() {
 
-    this.sections = [];
-
-    // Section 1 - Introduction
-    this.sections.push({
-      title: {
-        en: "1. Interface introduction",
-        de: "1. Einführung"
-      },
-      steps: [
-        {
-          text: {
-            en: 'This experiment lets you explore how machine learning works.',
-            de: "Mit diesem Experiment verstehen Sie, wie maschinelles Lernen funktioniert."
-          }
-        },
-        {
-          text: {
-            en: 'You can teach the machine using the camera.',
-            de: "Sie lehren die Maschine über die eingebaute Kamera."
-          },
-          execute: () => {
-            if (localStorage.getItem('webcam_status') === null) {
-              this.play("cameraInit");
-              this.webcamEvent = this.webcamStatus.bind(this);
-              window.addEventListener('webcam-status', this.webcamEvent);
-            } else if (localStorage.getItem('webcam_status') === 'granted') {
-              GLOBALS.camInput.start();
-              this.play("cameraStart");
-            } else if (localStorage.getItem('webcam_status') === 'denied') {
-              const text = {
-                en: 'Seems like the camera isn’t working. It might be your browser or camera settings.',
-                de: "Scheint, als ob die Kamera nicht funktioniert. Dies können Ihre Browser- oder Kameraeinstellungen sein."
-              };
-              this.setText(text);
-            }
-          }
-        },
-        {
-          name: 'cameraInit',
-          execute: () => {
-            /*eslint-disable */
-            if (!GLOBALS.browserUtils.isMobile && !GLOBALS.isCamGranted) {
-              const text = {
-                en: 'First, click allow to turn on your camera.',
-                de: "Klicken Sie zuerst auf Zulassen, um Ihre Kamera einzuschalten."
-              };
-              this.setText(text);
-            }
-            else
-              this.play('cameraStart');
-            /* eslint-enable */
-          }
-        },
-        {
-          name: 'cameraStart',
-          execute: () => {
-            GLOBALS.camInput.start();
-          }
-        },
-        {
-          duration: 20.6 - 16.3,
-          text: {
-            en: 'Here is your input. You should see yourself.',
-            de: "Hier ist Ihre Eingabe. Sie sollten sich selbst sehen."
-          },
-          execute: () => {
-            GLOBALS.inputSection.enable();
-            GLOBALS.inputSection.highlight();
-
-            GLOBALS.learningSection.dim();
-            GLOBALS.outputSection.dim();
-          }
-        },
-        {
-
-          duration: 1.5,
-          groupWithNext: true,
-          text: {
-            en: 'Here are three classes: green, purple, orange.',
-            de: "Es gibt drei Klassen: grün, violett, orange. "
-          },
-          execute: () => {
-            GLOBALS.inputSection.dehighlight();
-            GLOBALS.inputSection.dim();
-            GLOBALS.learningSection.undim();
-            GLOBALS.outputSection.dim();
-            if (GLOBALS.browserUtils.isMobile) {
-              TweenLite.to(window, 0, { scrollTo: 385 });
-            }
-
-          }
-        },
-        {
-          duration: 1,
-          groupWithNext: true,
-          execute: () => {
-            GLOBALS.learningSection.highlightClass(0);
-          }
-        },
-        {
-          duration: 1,
-          groupWithNext: true,
-          execute: () => {
-            GLOBALS.learningSection.dehighlightClass(0);
-            GLOBALS.learningSection.highlightClass(1);
-          }
-        },
-        {
-          duration: 1.5,
-          groupWithNext: true,
-          execute: () => {
-            GLOBALS.learningSection.dehighlightClass(0);
-            GLOBALS.learningSection.dehighlightClass(1);
-            GLOBALS.learningSection.highlightClass(2);
-          }
-        },
-        {
-          duration: 0.1,
-          execute: () => {
-            GLOBALS.learningSection.dehighlightClass(2);
-          }
-        },
-        {
-          duration: 3,
-          text: {
-            en: "Here is the output, where the machine responds.",
-            de: "Das ist die Ausgabe, mit der die Maschine antwortet."
-          },
-          execute: () => {
-            if (GLOBALS.browserUtils.isMobile) {
-              TweenLite.to(window, 0, { scrollTo: 660 });
-            }
-            GLOBALS.inputSection.dim();
-            GLOBALS.learningSection.dim();
-            GLOBALS.outputSection.undim();
-            GLOBALS.outputSection.highlight();
-          }
-        },
-        {
-          text: {
-            en: "It’s set to respond with one of these GIFs.",
-            de: "Sie ist so eingestellt, dass sie mit einem dieser Bilder antwortet."
-          },
-          execute: () => {
-            GLOBALS.outputSection.dehighlight();
-          }
-        },
-        {
-          text: {
-            en: "First, we’re going to teach it to respond with the robot GIF.",
-            de: "Zuerst werden wir dem Programm beibringen, mit dem Roboter-Bild zu antworten."
-          },
-          execute: () => {
-            GLOBALS.inputSection.undim();
-            GLOBALS.inputSection.enable();
-            GLOBALS.learningSection.undim();
-            GLOBALS.learningSection.enable();
-            GLOBALS.outputSection.undim();
-          }
-        }
-      ]
-    });
-
-    // Section 2 - Teaching first dataset
-    this.sections.push({
-      title: {
-        en: "2. Teaching first dataset",
-        de: "2. Ersten Datensatz lehren"
-      },
-      steps: [
-        {
-          text: {
-            en: "Stand in front of the camera and hold this green button for a couple of seconds.",
-            de: "Stellen Sie sich vor die Kamera und halten Sie diesen grünen Knopf einige Sekunden lang gedrückt. "
-          },
-          waitForEvent: true,
-          execute: () => {
-            window.addEventListener('class-trained', this.classTrainedEvent);
-            GLOBALS.learningSection.enableClass(0);
-            GLOBALS.learningSection.highlightClass(0);
-          }
-        },
-        {
-          name: "greenTrained",
-          text: {
-            en: 'You should now see the green bar and the robot GIF.',
-            de: "Sie sollten jetzt die grüne Leiste und das Roboter-Bild sehen."
-          },
-          execute: () => {
-            GLOBALS.learningSection.dehighlightClass(0);
-          }
-        },
-        { text: {
-          en: 'No matter what you do, you will always see the robot GIF.',
-          de: "Egal, was Sie tun, es wird immer das Roboter-Bild angezeigt werden."
-        } },
-        {
-          text: {
-            en: "That’s because the machine processes your input and picks which class was trained on similar images to the current one.",
-            de: "Das liegt daran, dass die Maschine Ihre Eingabe verarbeitet und auswählt, welche Klasse mit Bildern trainiert wurde, die dem aktuellen am ähnlichsten sehen."
-          }
-        },
-        {
-          text: {
-            en: 'But since you’ve only trained the green class, it always picks that one. That’s why you need to teach it a second class.',
-            de: "Aber da Sie nur die grüne Klasse trainiert haben, wählt die Maschine immer diese aus. Deshalb müssen Sie ihr eine zweite Klasse beibringen."
-          }
-        }
-      ]
-    });
-
-    // Section 3 - Teaching to distinguish cats and dogs
-    this.sections.push({
-      title: {
-        en: "3. Teaching to distinguish cats and dogs",
-        de: "3. Katzen und Hunde unterscheiden lernen"
-      },
-      steps: [
-        {
-          text: {
-            en: "Now pick up the stick figure with the cat image and hold it in front of the camera. While doing so, press this purple button for a couple of seconds.",
-            de: "Nehmen Sie nun das Schildchen mit dem Katzenbild und halten Sie es vor die Kamera. Drücken Sie dabei einige Sekunden lang auf das violette Feld."
-          },
-          waitForEvent: true,
-          execute: () => {
-            window.addEventListener('class-trained', this.classTrainedEvent);
-            GLOBALS.learningSection.enableClass(1);
-            GLOBALS.learningSection.highlightClass(1);
-          }
-        },
-        {
-          name: "purpleTrained",
-          text: {
-            en: 'You should see the cat GIF when you hold up the cat figure, and the robot GIF when you don´t show it. Try it.',
-            de: "Sie sollten das Katzen-Bild sehen, wenn Sie die Katzenfigur hochhalten, und das Roboter-Bild, wenn Sie es nicht tun. Versuchen Sie es."
-          },
-          execute: () => {
-            GLOBALS.learningSection.dehighlightClass(1);
-          }
-        },
-        {
-          text: {
-            en: 'Great! Looks like it’s working.',
-            de: "Großartig! Sieht aus, als würde es funktionieren."
-          }
-        },
-        {
-          text: {
-            en: "Now pick up the stick figure with the dog image and hold it in front of the camera. While doing so, press the orange button for a couple of seconds.",
-            de: "Nehmen Sie nun das Schildchen mit dem Hundebild und halten Sie es vor die Kamera. Drücken Sie dabei einige Sekunden lang das orangene Feld."
-          },
-          waitForEvent: true,
-          execute: () => {
-            window.addEventListener('class-trained', this.classTrainedEvent);
-            GLOBALS.learningSection.enableClass(2);
-            GLOBALS.learningSection.highlightClass(2);
-          }
-        },
-        {
-          name: "orangeTrained",
-          text: {
-            en: 'You should now see the cat GIF when you hold the cat image and the dog GIF when you hold the dog image. When they’re down you should see the robot GIF.',
-            de: "Sie sollten jetzt das Katzen-Bild sehen, wenn Sie das Katzenfigur hochhalten, und das Hunde-Bild, wenn Sie das Hundefigur hochhalten. Wenn Sie keines zeigen, sollten Sie das Roboter-Bild sehen."
-          }
-        },
-        {
-          text: {
-            en: 'You’ve now fully trained the artificial intelligence!',
-            de: "Sie haben die künstliche Intelligenz jetzt vollständig trainiert!"
-          }
-        }
-      ]
-    });
-
-    // Section 4 - Testing the AI model
-    this.sections.push({
-      title: {
-        en: "4. Testing the AI model",
-        de: "4. Das KI-Modell testen"
-      },
-      steps: [
-        {
-          text: {
-            en:
-              'See if the machine will now recognize similar images. Hold the image of the dog in the snow and the image of the mountain lion in front of the camera.',
-            de:
-              "Überprüfen Sie, wie das Gerät ähnliche Bilder einordnet. Halten Sie das Bild des Hundes im Schnee und das Bild des Berglöwen in die Kamera."
-          }
-        },
-        {
-          text: {
-            en: 'Great! Looks like it’s working.',
-            de: "Großartig! Sieht aus, als ob es funktioniert."
-          }
-        },
-        {
-          text: {
-            en: 'Is the machine foolproof? Try to hold the image of the wolf in front of the camera.',
-            de: "Aber ist die Maschine unfehlbar? Halten Sie das Bild des Wolfes in die Kamera."
-          }
-        },
-        {
-          text: {
-            en: 'You will see either the cat GIF or the dog GIF.',
-            de: "Sie werden entweder das Katzen-Bild oder das Hunde-Bild sehen."
-          }
-        },
-        {
-          text: {
-            en: 'The machine cannot decide between cat and dog, because it has no understanding of "wolf". It only knows the colors and patterns that you have taught it before.',
-            de: 'Die Maschine kann sich nicht zwischen Katze und Hund entscheiden, da sie kein Verständnis von "Wolf" besitzt. Sie kennt nur die Farben und Muster, die Sie ihr vorher beigebracht haben.'
-          }
-        },
-        {
-          text: {
-            en: 'Machines need large datasets and more categories to be able to recognize a larger variety of images.',
-            de: "Computerprogramme brauchen große Datensätze und mehr Kategorien, um eine größere Vielfalt von Bildern erkennen zu können."
-          }
-        },
-        {
-          text: {
-            en: 'Thanks for teaching … and learning. You may continue playing with the program and teach it whatever you like: people, body parts, facial expression, ...',
-            de: 'Danke für das Lehren ... und Lernen. Sie können nun weiter mit dem Programm spielen und ihm beibringen, was immer Sie wollen: Personen, Körperteile, Gesichtsausdrücke, ...'
-          }
-        }
-      ]
-    });
-
     this.wizardRunning = false;
     this.sectionIndex = 0; // HACK, PJ: Do not commit anything other than 0, for testing purposes only.
     if (this.sectionIndex > 0) // For testing purposes only.
@@ -368,22 +40,32 @@ class MainController {
     this.audio.addEventListener('canplaythrough', this.loadedEvent);
     this.audio.src = 'assets/wizard/voice-over.mp3';
 
+    this.languageSelect = document.querySelector(".language-select");
     this.wizardWrapper = document.querySelector('.wizard__wrapper');
     this.bar = document.querySelector('#wizard');
     this.machine = document.querySelector('.machine');
+    this.machineSections = document.querySelector('.machine__sections');
+    this.intro = document.querySelector('.intro');
+    this.introTextContainer = this.intro.querySelector('.intro__text');
+    this.introTitleContainer = this.intro.querySelector('.intro__title');
+    this.introStartButton = this.intro.querySelector('.intro__start-button');
     this.titleContainer = this.bar.querySelector('.wizard__text-title');
     this.textContainer = this.bar.querySelector('.wizard__text-inner');
     this.soundButton = this.bar.querySelector('.wizard__sound-button');
     this.soundIcon = this.soundButton.querySelector('.wizard__sound-icon');
+    
+    this.introStartButton.addEventListener('click', () => this.next());
     this.soundButton.addEventListener('click', this.toggleSound.bind(this));
 
     this.nextButton = this.bar.querySelector('.wizard__next-button');
 
-    this.restartButton = document.querySelector('#restart-machine-button');
-    this.restartButton.addEventListener('click', () => { this.restart(); });
+    // this.restartButton = document.querySelector('#restart-machine-button');
+    // this.restartButton.addEventListener('click', () => { this.restart(); });
+    // this.restartButtonSmall = document.querySelector('#restart-machine-button-small');
+    // this.restartButtonSmall.addEventListener('click', () => { this.restart(); });
 
-    this.restartButtonSmall = document.querySelector('#restart-machine-button-small');
-    this.restartButtonSmall.addEventListener('click', () => { this.restart(); });
+    this.sections = this.initializeSections()
+
 
     this.classTrainedEvent = this.classTrained.bind(this);
 
@@ -404,6 +86,8 @@ class MainController {
     window.addEventListener('resize', this.resizeEvent);
     window.addEventListener('scroll', this.scrollEvent);
 
+    this.initializeLanguageSelect(this.languageSelect);
+
     this.documentClickEvent = this.documentClick.bind(this);
     document.body.addEventListener('mouseup', this.documentClickEvent, true);     
 
@@ -411,9 +95,195 @@ class MainController {
     this.scrollEvent();
   }
 
-  iniializeSections() {
+  // Specify the interaction steps of the app in a wizard-like action
+  initializeSections() {
+    const sections = [];
 
+    // Section 1 - Initialization (for legacy reason part of the workflow definition)
+    sections.push({
+      // title: {
+      //   en: "1. Interface introduction",
+      //   de: "1. Einführung"
+      // },
+      steps: [
+        {
+          title: {
+            nl: "Teachable Machine NL",
+            en: "Teachable Machine EN",
+            de: "Teachable Machine DE",
+          },
+          text: {
+            nl: "Nederlands Morbi interdum mollis sapien. Sed ac risus. Phasellus lacinia, magna a ullamcorper laoreet, lectus arcu pulvinar risus, vitae facilisis libero dolor a purus. Sed vel lacus. Mauris nibh felis, adipiscing varius, adipiscing in, lacinia vel, tellus. Suspendisse ac urna. Etiam pellentesque mauris ut lectus. Nunc tellus ante, mattis eget, gravida vitae, ultricies ac, leo. Integer leo pede, ornare a, lacinia eu, vulputate vel, nisl.<br/><br/>Suspendisse mauris. Fusce accumsan mollis eros. Pellentesque a diam sit amet mi ullamcorper vehicula. Integer adipiscing risus a sem. Nullam quis massa sit amet nibh viverra malesuada. Nunc sem lacus, accumsan quis, faucibus non, congue vel, arcu. Ut scelerisque hendrerit tellus. Integer sagittis. Vivamus a mauris eget arcu gravida tristique. Nunc iaculis mi in ante. Vivamus imperdiet nibh feugiat est.",
+            en: "English Morbi interdum mollis sapien. Sed ac risus. Phasellus lacinia, magna a ullamcorper laoreet, lectus arcu pulvinar risus, vitae facilisis libero dolor a purus. Sed vel lacus. Mauris nibh felis, adipiscing varius, adipiscing in, lacinia vel, tellus. Suspendisse ac urna. Etiam pellentesque mauris ut lectus. Nunc tellus ante, mattis eget, gravida vitae, ultricies ac, leo. Integer leo pede, ornare a, lacinia eu, vulputate vel, nisl.<br/><br/>Suspendisse mauris. Fusce accumsan mollis eros. Pellentesque a diam sit amet mi ullamcorper vehicula. Integer adipiscing risus a sem. Nullam quis massa sit amet nibh viverra malesuada. Nunc sem lacus, accumsan quis, faucibus non, congue vel, arcu. Ut scelerisque hendrerit tellus. Integer sagittis. Vivamus a mauris eget arcu gravida tristique. Nunc iaculis mi in ante. Vivamus imperdiet nibh feugiat est.",
+            de: "Deutsch Morbi interdum mollis sapien. Sed ac risus. Phasellus lacinia, magna a ullamcorper laoreet, lectus arcu pulvinar risus, vitae facilisis libero dolor a purus. Sed vel lacus. Mauris nibh felis, adipiscing varius, adipiscing in, lacinia vel, tellus. Suspendisse ac urna. Etiam pellentesque mauris ut lectus. Nunc tellus ante, mattis eget, gravida vitae, ultricies ac, leo. Integer leo pede, ornare a, lacinia eu, vulputate vel, nisl.<br/><br/>Suspendisse mauris. Fusce accumsan mollis eros. Pellentesque a diam sit amet mi ullamcorper vehicula. Integer adipiscing risus a sem. Nullam quis massa sit amet nibh viverra malesuada. Nunc sem lacus, accumsan quis, faucibus non, congue vel, arcu. Ut scelerisque hendrerit tellus. Integer sagittis. Vivamus a mauris eget arcu gravida tristique. Nunc iaculis mi in ante. Vivamus imperdiet nibh feugiat est."
+          },
+          textContainer: this.introTextContainer,
+          titleContainer: this.introTitleContainer,
+          waitForEvent: true,
+          execute: () => {
+            this.showIntro();
+            this.hideWizard();
+            this.hideMachineSections();
+          }
+        },
+        {
+          name: "startWizard",
+          execute: () => {
+            this.hideIntro();
+            this.showWizard();
+            this.showMachineSections();
+          }
+        },
+        {
+          execute: () => {
+            if (localStorage.getItem('webcam_status') === null) {
+              this.play("cameraInit");
+              this.webcamEvent = this.webcamStatus.bind(this);
+              window.addEventListener('webcam-status', this.webcamEvent);
+            } else if (localStorage.getItem('webcam_status') === 'granted') {
+              GLOBALS.camInput.start();
+              this.play("cameraStart");
+            } else if (localStorage.getItem('webcam_status') === 'denied') {
+              const text = {
+                en: 'Seems like the camera isn’t working. It might be your browser or camera settings.',
+                de: "Scheint, als ob die Kamera nicht funktioniert. Dies können Ihre Browser- oder Kameraeinstellungen sein."
+              };
+              this.setText(text);
+            }
+          }
+        },
+        {
+          name: 'cameraInit',
+          execute: () => {
+            if (!GLOBALS.browserUtils.isMobile && !GLOBALS.isCamGranted) {
+              const text = {
+                en: 'First, click allow to turn on your camera.',
+                de: "Klicken Sie zuerst auf Zulassen, um Ihre Kamera einzuschalten."
+              };
+              this.setText(text);
+            }
+            else
+              this.play('cameraStart');
+          }
+        },
+        {
+          name: 'cameraStart',
+          execute: () => {
+            GLOBALS.camInput.start();
+          }
+        },
+      ]
+    });
+
+    // Section 2 - Teaching first dataset
+    sections.push({
+      // title: {
+      //   en: "2. Teaching first dataset",
+      //   de: "2. Ersten Datensatz lehren"
+      // },
+      steps: [
+        {
+          // text: {
+          //   en: "Stand in front of the camera and hold this green button for a couple of seconds.",
+          //   de: "Stellen Sie sich vor die Kamera und halten Sie diesen grünen Knopf einige Sekunden lang gedrückt. "
+          // },
+          name: "startTraining",
+          waitForEvent: true,
+          execute: () => {
+            window.addEventListener('class-trained', this.classTrainedEvent);
+            GLOBALS.learningSection.enableClass(0);
+            GLOBALS.learningSection.highlightClass(0);
+          }
+        },
+        {
+          name: "greenTrained",
+          // text: {
+          //   en: 'You should now see the green bar and the robot GIF.',
+          //   de: "Sie sollten jetzt die grüne Leiste und das Roboter-Bild sehen."
+          // },
+          execute: () => {
+            GLOBALS.learningSection.dehighlightClass(0);
+          }
+        },
+        {
+          // text: {
+          //   en: "Now pick up the stick figure with the cat image and hold it in front of the camera. While doing so, press this purple button for a couple of seconds.",
+          //   de: "Nehmen Sie nun das Schildchen mit dem Katzenbild und halten Sie es vor die Kamera. Drücken Sie dabei einige Sekunden lang auf das violette Feld."
+          // },
+          waitForEvent: true,
+          execute: () => {
+            window.addEventListener('class-trained', this.classTrainedEvent);
+            GLOBALS.learningSection.enableClass(1);
+            GLOBALS.learningSection.highlightClass(1);
+          }
+        },
+        {
+          name: "purpleTrained",
+          // text: {
+          //   en: 'You should see the cat GIF when you hold up the cat figure, and the robot GIF when you don´t show it. Try it.',
+          //   de: "Sie sollten das Katzen-Bild sehen, wenn Sie die Katzenfigur hochhalten, und das Roboter-Bild, wenn Sie es nicht tun. Versuchen Sie es."
+          // },
+          execute: () => {
+            GLOBALS.learningSection.dehighlightClass(1);
+          }
+        },
+        {
+          // text: {
+          //   en: "Now pick up the stick figure with the dog image and hold it in front of the camera. While doing so, press the orange button for a couple of seconds.",
+          //   de: "Nehmen Sie nun das Schildchen mit dem Hundebild und halten Sie es vor die Kamera. Drücken Sie dabei einige Sekunden lang das orangene Feld."
+          // },
+          waitForEvent: true,
+          execute: () => {
+            window.addEventListener('class-trained', this.classTrainedEvent);
+            GLOBALS.learningSection.enableClass(2);
+            GLOBALS.learningSection.highlightClass(2);
+          }
+        },
+      ]
+    });
+
+    return sections;
   }
+
+  initializeLanguageSelect(select) {
+    select.addEventListener('change', () => { 
+      GLOBALS.language = select.value;
+      localStorage.setItem("language", GLOBALS.language);
+
+      GLOBALS.mainController.updateLanguage();
+      GLOBALS.inputSection.updateLanguage();
+      GLOBALS.learningSection.updateLanguage();
+      GLOBALS.outputSection.updateLanguage();
+
+      // Hacky, but it works
+      GLOBALS.preventDocumentClick = true;
+     });
+  }
+
+  showIntro() {
+    this.intro.classList.remove("hidden")
+  }
+
+  hideIntro() {
+    this.intro.classList.add("hidden")
+  }
+
+  showWizard() {
+    this.wizardWrapper.classList.remove("hidden")
+  }
+
+  hideWizard() {
+    this.wizardWrapper.classList.add("hidden")
+  }
+
+  showMachineSections() {
+    this.machineSections.classList.remove("hidden")
+  }
+
+  hideMachineSections() {
+    this.machineSections.classList.add("hidden")
+  }
+
 
   stickBar() {
     this.bar.classList.add('wizard--fixed');
@@ -506,7 +376,7 @@ class MainController {
     if (id === 'orange' && numSamples >= 30) {
       GLOBALS.learningSection.dehighlightClass(2);
       GLOBALS.inputSection.hideGif(2);
-      this.play("orangeTrained");
+      this.play("startTraining");
       window.removeEventListener('class-trained', this.classTrainedEvent);
     }
 
@@ -568,7 +438,7 @@ class MainController {
     this.timer.style.display = (step.duration && step.execute) ? "block" : "none";
 
     if (step.text)
-      this.setText(step.text, section.title);
+      this.setText(step.text, step.title || section.title, { textContainer: step.textContainer, titleContainer: step.titleContainer });
     if (step.execute) {
       step.execute();
     }
@@ -640,15 +510,20 @@ class MainController {
     this.soundIcon.classList.add('wizard__sound-icon--on');
   }
 
-  setText(message, title) {
+  setText(message, title, elements) {
     this.message = message;
     this.title = title;
+    this.textElements = elements;
 
     var messageText = message ? message[GLOBALS.language] : "";
-    this.textContainer.textContent = messageText;
+    
+    var textElement = (elements && elements.textContainer) || this.textContainer;
+    textElement.innerHTML = messageText;
 
-    if (title)
-      this.titleContainer.textContent = title[GLOBALS.language];
+    if (title) {
+      var titleElement = (elements && elements.titleContainer) || this.titleContainer;
+      titleElement.textContent = title[GLOBALS.language];
+    }
 
     if (messageText.length > 0) {
       this.timerFill.style.width = 0 + 'px';
@@ -656,7 +531,7 @@ class MainController {
   }
 
   updateLanguage() {
-    this.setText(this.message, this.title);
+    this.setText(this.message, this.title, this.textElements);
 
     const nextButtonCaption = {
       en: "Click to continue",
@@ -688,7 +563,6 @@ class MainController {
     this.play();
     this.startAudioTimer();
     this.updateLanguage();
-    gtag('event', 'wizard_start');
 
     // Restart the wizard whenever there is 2 minutes of inactivity 
     setTimeout(this.checkAutoRestart.bind(this), 1000); 

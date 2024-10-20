@@ -36,7 +36,7 @@ function init() {
 	}
 
 	GLOBALS.browserUtils = new BrowserUtils();
-  GLOBALS.language = localStorage.getItem("language") || "de";
+  GLOBALS.language = localStorage.getItem("language") || "nl";
   
   GLOBALS.learningSection = new LearningSection(document.querySelector('#learning-section'));
 	GLOBALS.inputSection = new InputSection(document.querySelector('#input-section'));
@@ -49,8 +49,6 @@ function init() {
 	if (localStorage.getItem('isBackFacingCam') && localStorage.getItem('isBackFacingCam') === 'true') {
 		GLOBALS.isBackFacingCam = true;
 	}
-
-	initLanguageToggle();
 
 	// Camera status messages per browser
 	if (GLOBALS.browserUtils.isChrome && !GLOBALS.browserUtils.isEdge) {
@@ -65,39 +63,6 @@ function init() {
   GLOBALS.mainController.start();
 }
 
-function initLanguageToggle() {
-	// There are language buttons at the top of both the launch screen and the main machine interface.
-	const languageButtons = document.querySelectorAll(".languageSlider");
-
-	const updateButtonStatus = function() {
-    for (let i = 0; i < languageButtons.length; i++) {
-      languageButtons[i].classList.toggle("right", GLOBALS.language === "de");
-    }
-  };
-
-  updateButtonStatus();
-  for (let i = 0; i < languageButtons.length; i++) {
-    const languageButton = languageButtons[i];
-
-    // Mousedown because we need to be able to prevent documentclicks in the wizard
-    languageButton.addEventListener('mousedown',
-      function toggleLanguage(event) {
-        GLOBALS.language = GLOBALS.language === "de" ? "en" : "de";
-        localStorage.setItem("language", GLOBALS.language);
-        updateButtonStatus();
-
-        GLOBALS.launchScreen.updateLanguage();
-        GLOBALS.mainController.updateLanguage();
-        GLOBALS.inputSection.updateLanguage();
-        GLOBALS.learningSection.updateLanguage();
-        GLOBALS.outputSection.updateLanguage();
-
-        // Hacky, but it works
-        GLOBALS.preventDocumentClick = true;
-      }
-    );
-  }
-}
 
 window.addEventListener('load', init);
 
