@@ -20,18 +20,32 @@
 <body class="no-scroll">
     <div class="wrapper">
         <div class="machine" id="machine">
-            <div class="language-select-container">
-                <select class="language-select">
-                    <option value="nl">Nederlands</option>
-                    <option value="en">English</option>
-                    <option value="de">Deutsch</option>
-                </select>
-                <div class="language-select-overlay">Language<div class="language-select-arrow"></div></div>
-            </div>
             <div class="intro">
-                <h1 class="intro__title">...</h1>
-                <div class="intro__text">...</div>
-                <button type="button" class="intro__start-button">Start</button>
+                <h1 class="intro-title">Train de robot</h1>
+                <div class="intro-text"><b>Vivamus vel pretium est</b><br/>Curabitur luctus leo vel quam dignissim finibus. Pellentesque aliquet quam convallis eros eleifend semper. Suspendisse rutrum vitae metus in interdum. Curabitur luctus leo vel quam dignissim finibus. Pellentesque aliquet quam convallis eros eleifend semper. Suspendisse rutrum vitae metus in interdum.</div>
+                <div class="intro-text-start">Kies je taal en start het spel</div>
+                <div class="intro-text-start-small">Wähle deine Sprache und starte das Spiel / Select your language and start the game</div>
+                <div class="intro-buttons">
+                    <button type="button" class="intro-start-button" data-language="nl">NL</button>
+                    <button type="button" class="intro-start-button" data-language="de">DE</button>
+                    <button type="button" class="intro-start-button" data-language="en">EN</button>
+                </div>
+            </div>
+            <div class="main">
+                <div class="main__header">First row: 1 column</div>
+                <div class="main__panel-left">
+                    <div class="main__object object_1"></div>
+                    <div class="main__object object_2"></div>
+                    <div class="main__object object_3"></div>
+                </div>
+                <div class="main__panel-video">
+                    <div class="main__video"></div>
+                </div>
+                <div class="main__panel-right">
+                    <div class="main__object object_4"></div>
+                    <div class="main__object object_5"></div>
+                    <div class="main__object object_6"></div>
+                </div>                
             </div>
             <div class="machine__sections">
                 <div id="input-section" class="section section--disabled input section--input">

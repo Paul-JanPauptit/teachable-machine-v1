@@ -48,6 +48,42 @@
 	border-top: 6px solid #333; 
 }
 
+.main {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 240px auto;
+  /* Stylus does not seem to allow using two separate rows for the styling */
+  grid-template-areas: "header header header" "col1 col2 col3";       
+  
+}
+
+.main__header {
+  grid-area: header;  
+  font-size: 32px;
+  align-content: center;
+  justify-items: center;
+}
+
+.main__panel-left {
+  grid-area: col1;    
+  grid-template-rows: repeat(4, 1fr);
+}
+
+.main__panel-video {
+  grid-area: col2;    
+  background-color: yellow;
+}
+
+.main__panel-right {
+  grid-area: col3;    
+  background-color: blue;
+}
+
 .machine {
 	position: relative
 	padding-top: space(8)

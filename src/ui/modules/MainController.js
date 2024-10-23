@@ -40,21 +40,18 @@ class MainController {
     this.audio.addEventListener('canplaythrough', this.loadedEvent);
     this.audio.src = 'assets/wizard/voice-over.mp3';
 
-    this.languageSelect = document.querySelector(".language-select");
     this.wizardWrapper = document.querySelector('.wizard__wrapper');
     this.bar = document.querySelector('#wizard');
     this.machine = document.querySelector('.machine');
     this.machineSections = document.querySelector('.machine__sections');
     this.intro = document.querySelector('.intro');
-    this.introTextContainer = this.intro.querySelector('.intro__text');
-    this.introTitleContainer = this.intro.querySelector('.intro__title');
-    this.introStartButton = this.intro.querySelector('.intro__start-button');
+    this.introStartButtons = this.intro.querySelectorAll('.intro-start-button');
+    this.main = document.querySelector('.main');
     this.titleContainer = this.bar.querySelector('.wizard__text-title');
     this.textContainer = this.bar.querySelector('.wizard__text-inner');
     this.soundButton = this.bar.querySelector('.wizard__sound-button');
     this.soundIcon = this.soundButton.querySelector('.wizard__sound-icon');
     
-    this.introStartButton.addEventListener('click', () => this.next());
     this.soundButton.addEventListener('click', this.toggleSound.bind(this));
 
     this.nextButton = this.bar.querySelector('.wizard__next-button');
@@ -86,7 +83,7 @@ class MainController {
     window.addEventListener('resize', this.resizeEvent);
     window.addEventListener('scroll', this.scrollEvent);
 
-    this.initializeLanguageSelect(this.languageSelect);
+    this.initializeStartButtons(this.introStartButtons);
 
     this.documentClickEvent = this.documentClick.bind(this);
     document.body.addEventListener('mouseup', this.documentClickEvent, true);     
@@ -101,27 +98,25 @@ class MainController {
 
     // Section 1 - Initialization (for legacy reason part of the workflow definition)
     sections.push({
-      // title: {
-      //   en: "1. Interface introduction",
-      //   de: "1. Einführung"
-      // },
       steps: [
         {
-          title: {
-            nl: "Teachable Machine NL",
-            en: "Teachable Machine EN",
-            de: "Teachable Machine DE",
-          },
-          text: {
-            nl: "Nederlands Morbi interdum mollis sapien. Sed ac risus. Phasellus lacinia, magna a ullamcorper laoreet, lectus arcu pulvinar risus, vitae facilisis libero dolor a purus. Sed vel lacus. Mauris nibh felis, adipiscing varius, adipiscing in, lacinia vel, tellus. Suspendisse ac urna. Etiam pellentesque mauris ut lectus. Nunc tellus ante, mattis eget, gravida vitae, ultricies ac, leo. Integer leo pede, ornare a, lacinia eu, vulputate vel, nisl.<br/><br/>Suspendisse mauris. Fusce accumsan mollis eros. Pellentesque a diam sit amet mi ullamcorper vehicula. Integer adipiscing risus a sem. Nullam quis massa sit amet nibh viverra malesuada. Nunc sem lacus, accumsan quis, faucibus non, congue vel, arcu. Ut scelerisque hendrerit tellus. Integer sagittis. Vivamus a mauris eget arcu gravida tristique. Nunc iaculis mi in ante. Vivamus imperdiet nibh feugiat est.",
-            en: "English Morbi interdum mollis sapien. Sed ac risus. Phasellus lacinia, magna a ullamcorper laoreet, lectus arcu pulvinar risus, vitae facilisis libero dolor a purus. Sed vel lacus. Mauris nibh felis, adipiscing varius, adipiscing in, lacinia vel, tellus. Suspendisse ac urna. Etiam pellentesque mauris ut lectus. Nunc tellus ante, mattis eget, gravida vitae, ultricies ac, leo. Integer leo pede, ornare a, lacinia eu, vulputate vel, nisl.<br/><br/>Suspendisse mauris. Fusce accumsan mollis eros. Pellentesque a diam sit amet mi ullamcorper vehicula. Integer adipiscing risus a sem. Nullam quis massa sit amet nibh viverra malesuada. Nunc sem lacus, accumsan quis, faucibus non, congue vel, arcu. Ut scelerisque hendrerit tellus. Integer sagittis. Vivamus a mauris eget arcu gravida tristique. Nunc iaculis mi in ante. Vivamus imperdiet nibh feugiat est.",
-            de: "Deutsch Morbi interdum mollis sapien. Sed ac risus. Phasellus lacinia, magna a ullamcorper laoreet, lectus arcu pulvinar risus, vitae facilisis libero dolor a purus. Sed vel lacus. Mauris nibh felis, adipiscing varius, adipiscing in, lacinia vel, tellus. Suspendisse ac urna. Etiam pellentesque mauris ut lectus. Nunc tellus ante, mattis eget, gravida vitae, ultricies ac, leo. Integer leo pede, ornare a, lacinia eu, vulputate vel, nisl.<br/><br/>Suspendisse mauris. Fusce accumsan mollis eros. Pellentesque a diam sit amet mi ullamcorper vehicula. Integer adipiscing risus a sem. Nullam quis massa sit amet nibh viverra malesuada. Nunc sem lacus, accumsan quis, faucibus non, congue vel, arcu. Ut scelerisque hendrerit tellus. Integer sagittis. Vivamus a mauris eget arcu gravida tristique. Nunc iaculis mi in ante. Vivamus imperdiet nibh feugiat est."
-          },
-          textContainer: this.introTextContainer,
-          titleContainer: this.introTitleContainer,
+          // Support for language switching in the title screen is turned off for now, fixed language  
+          // title: {
+          //   nl: "Teachable Machine NL",
+          //   en: "Teachable Machine EN",
+          //   de: "Teachable Machine DE",
+          // },
+          // text: {
+          //   nl: "Nederlands Morbi interdum mollis sapien. Sed ac risus. Phasellus lacinia, magna a ullamcorper laoreet, lectus arcu pulvinar risus, vitae facilisis libero dolor a purus. Sed vel lacus. Mauris nibh felis, adipiscing varius, adipiscing in, lacinia vel, tellus. Suspendisse ac urna. Etiam pellentesque mauris ut lectus. Nunc tellus ante, mattis eget, gravida vitae, ultricies ac, leo. Integer leo pede, ornare a, lacinia eu, vulputate vel, nisl.<br/><br/>Suspendisse mauris. Fusce accumsan mollis eros. Pellentesque a diam sit amet mi ullamcorper vehicula. Integer adipiscing risus a sem. Nullam quis massa sit amet nibh viverra malesuada. Nunc sem lacus, accumsan quis, faucibus non, congue vel, arcu. Ut scelerisque hendrerit tellus. Integer sagittis. Vivamus a mauris eget arcu gravida tristique. Nunc iaculis mi in ante. Vivamus imperdiet nibh feugiat est.",
+          //   en: "English Morbi interdum mollis sapien. Sed ac risus. Phasellus lacinia, magna a ullamcorper laoreet, lectus arcu pulvinar risus, vitae facilisis libero dolor a purus. Sed vel lacus. Mauris nibh felis, adipiscing varius, adipiscing in, lacinia vel, tellus. Suspendisse ac urna. Etiam pellentesque mauris ut lectus. Nunc tellus ante, mattis eget, gravida vitae, ultricies ac, leo. Integer leo pede, ornare a, lacinia eu, vulputate vel, nisl.<br/><br/>Suspendisse mauris. Fusce accumsan mollis eros. Pellentesque a diam sit amet mi ullamcorper vehicula. Integer adipiscing risus a sem. Nullam quis massa sit amet nibh viverra malesuada. Nunc sem lacus, accumsan quis, faucibus non, congue vel, arcu. Ut scelerisque hendrerit tellus. Integer sagittis. Vivamus a mauris eget arcu gravida tristique. Nunc iaculis mi in ante. Vivamus imperdiet nibh feugiat est.",
+          //   de: "Deutsch Morbi interdum mollis sapien. Sed ac risus. Phasellus lacinia, magna a ullamcorper laoreet, lectus arcu pulvinar risus, vitae facilisis libero dolor a purus. Sed vel lacus. Mauris nibh felis, adipiscing varius, adipiscing in, lacinia vel, tellus. Suspendisse ac urna. Etiam pellentesque mauris ut lectus. Nunc tellus ante, mattis eget, gravida vitae, ultricies ac, leo. Integer leo pede, ornare a, lacinia eu, vulputate vel, nisl.<br/><br/>Suspendisse mauris. Fusce accumsan mollis eros. Pellentesque a diam sit amet mi ullamcorper vehicula. Integer adipiscing risus a sem. Nullam quis massa sit amet nibh viverra malesuada. Nunc sem lacus, accumsan quis, faucibus non, congue vel, arcu. Ut scelerisque hendrerit tellus. Integer sagittis. Vivamus a mauris eget arcu gravida tristique. Nunc iaculis mi in ante. Vivamus imperdiet nibh feugiat est."
+          // },
+          // textContainer: this.introTextContainer,
+          // titleContainer: this.introTitleContainer,
           waitForEvent: true,
           execute: () => {
             this.showIntro();
+            this.hideMain();
             this.hideWizard();
             this.hideMachineSections();
           }
@@ -130,8 +125,9 @@ class MainController {
           name: "startWizard",
           execute: () => {
             this.hideIntro();
-            this.showWizard();
-            this.showMachineSections();
+            this.showMain();
+            // this.showWizard();
+            // this.showMachineSections();
           }
         },
         {
@@ -245,19 +241,21 @@ class MainController {
     return sections;
   }
 
-  initializeLanguageSelect(select) {
-    select.addEventListener('change', () => { 
-      GLOBALS.language = select.value;
-      localStorage.setItem("language", GLOBALS.language);
+  initializeStartButtons(buttons) {
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        GLOBALS.language = button.dataset.language;
+        localStorage.setItem("language", GLOBALS.language);
 
-      GLOBALS.mainController.updateLanguage();
-      GLOBALS.inputSection.updateLanguage();
-      GLOBALS.learningSection.updateLanguage();
-      GLOBALS.outputSection.updateLanguage();
+        GLOBALS.mainController.updateLanguage();
+        GLOBALS.inputSection.updateLanguage();
+        GLOBALS.learningSection.updateLanguage();
+        GLOBALS.outputSection.updateLanguage();
 
-      // Hacky, but it works
-      GLOBALS.preventDocumentClick = true;
-     });
+        GLOBALS.preventDocumentClick = true;
+        this.next();
+      });
+    });
   }
 
   showIntro() {
@@ -267,6 +265,15 @@ class MainController {
   hideIntro() {
     this.intro.classList.add("hidden")
   }
+
+  showMain() {
+    this.main.classList.remove("hidden")
+  }
+
+  hideMain() {
+    this.main.classList.add("hidden")
+  }
+
 
   showWizard() {
     this.wizardWrapper.classList.remove("hidden")

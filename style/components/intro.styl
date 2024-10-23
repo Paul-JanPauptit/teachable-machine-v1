@@ -2,205 +2,58 @@
 	position: absolute;
 	left: 0;
 	top: 0;
-	z-index: 101
 	width: 100%
 	height: 100%
+	font-family: $font;
 	padding: 40px;
 }
 
-.intro__title {
-	font-size: 44px;
+.intro-title {
+	font-size: 150px;
+	font-family: $titleFont;
     color: $color__black;
-    text-align: left;
-    margin-bottom: 32px;
+	margin-top: 20px;
+    margin-bottom: 60px;
 }
 
-.intro__text {
+.intro-text {
+    font-size: 40px;
     color: $color__black;
-    font-size: 32px;
-	text-align: left;
-    letter-spacing: 0.1em;
+	padding: 0 10%;
+	margin-bottom: 60px;
 }
 
-.intro__start-button {
-	button-style()
-    font-size: 60px;
-	position: absolute;
-    right: 40px;
-	bottom: 40px;
+.intro-text-start {
+    font-size: 40px;
+	color: $color__black;
+	margin-bottom: 14px;
 }
 
-.intro__text-break {
-	display: block
+.intro-text-start-small {
+	font-size: 30px;
+	color: $color__black;
+	margin-bottom: 100px;
 }
 
-.intro__video {
-	position: relative
-	max-width: 800px
-	height: 0
-	margin-left: auto
-	margin-right: auto
-	margin-bottom: space(2)
-	overflow: hidden
-}
-.intro__video-wrapper {
-	position: relative
-	padding-bottom: 56.25% /* 16:9 */
-	padding-top: 25px
-	height: 0
-	margin-bottom: space(2)
-}
-.intro__video-player {
-	position: absolute
-	top: 0
-	left: 0
-	width: 100%
-	height: 100%
-	background: $color__black
+.intro-buttons {
+	display: grid;
+	grid-template-columns: min-content min-content min-content;
+	grid-column-gap: 32px;
+	justify-content: center;
 }
 
-@media screen and (max-width: 900px) {
-
-	.intro__inner {
-		padding-top: 0
-	}
-
-	.intro__content-desktop {
-		display: none
-	}
-
-	.intro__content-mobile {
-		background: $color__white
-		border-radius: 5px
-		box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)
-		display: block
-		margin: 0 auto
-		padding: 25px
-		position: relative
-		text-align: left
-		width: 90%
-	}
-
-	.intro__content-mobile-incompatible {
-		display: none
-		margin: 20px auto 0
-		width: 80%
-
-		a {
-			text-decoration: none
-		}
-	}
-
-	.intro__content-mobile-header {
-		color: #58595b
-		line-height: 1.4
-	}
-
-	.intro__content-mobile-body {
-		color: #828386
-	}
-
-	.intro__content-mobile-ok {
-		margin-bottom: 0
-		text-align: right
-	}
-
-	.intro__content-mobile-ok-link {
-		display: inline-block
-		padding: 10px 20px
-		margin-right: -10px
-		text-decoration: none
-	}
-
-	.intro__text {
-		font-size: 14px
-	}
-
-	.intro__button-social {
-
-		& + & {
-			margin-left: 10px
-		}
-	}
-
-	.wizard__launch-skip {
-		font-size: 14px
-	}
-
-	.intro__title {
-		height: 70px
-		margin-bottom: space(1)
-		margin-top: 0
-	}
-
-	.intro__cta {
-		margin-top: space(2)
-	}
-
-	.intro__footer-link--left {
-		width: 50%
-	}
-
-	.intro__title-image {
-		height: 70px
-		margin: 0 auto
-		max-width: 280px
-		width: 60%
-
-		&.intro__title-image--desktop {
-			display: none
-		}
-
-		&.intro__title-image--mobile {
-			display: block
-			width: 100%
-		}
-	}
-
-	.intro__title-image--teachable,
-	.intro__title-image--machine {
-		margin-right: 0
-		max-width: 80%
-		height: 30px
-	}
+.intro-start-button {
+    font-size: 34px;
+	font-family: $font;
+	color: $color__white;
+	background-color: $color__black;
+	padding: 25px;
+	border-radius: 100%;
+	pointer: cursor;
 }
 
-@media screen and (max-width: 900px) and (orientation: landscape) {
-
-	.intro__inner {
-		margin-top: -20px
-		padding-bottom: 10px
-	}
-
-	.intro__title {
-		height: 50px
-	}
-
-	.intro__title-image {
-		height: 50px
-	}
-
-	.intro__content-mobile {
-		width: 80%
-	}
-
-	.intro__content-mobile-ok {
-		margin-top: -10px
-	}
-
-	.intro__content-mobile-header {
-		font-size: 14px
-	}
-
-	.intro__content-mobile-body {
-		font-size: 12px
-	}
-
-	.intro__footer {
-		padding: 5px 20px
-	}
-
-	.intro__footer-link--left {
-		width: 25%
-	}
+.intro-start-button:active {
+  opacity: 0.7;
+  transform: scale(0.9);      
 }
+
