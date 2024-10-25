@@ -47,8 +47,13 @@ class MainController {
     this.intro = document.querySelector('.intro');
     this.introStartButtons = this.intro.querySelectorAll('.intro-start-button');
     this.main = document.querySelector('.main');
+    this.mainScanButton = this.main.querySelector('.main-scan-button');
+    this.textContainer = this.main.querySelector('.main-text');
+    this.progressContainer = this.main.querySelector('.main-progress-container');
+    this.progressBar = this.progressContainer.querySelector('.main-progress-bar');
+    this.progressLabel = this.progressContainer.querySelector('.main-progress-label');
+
     this.titleContainer = this.bar.querySelector('.wizard__text-title');
-    this.textContainer = this.bar.querySelector('.wizard__text-inner');
     this.soundButton = this.bar.querySelector('.wizard__sound-button');
     this.soundIcon = this.soundButton.querySelector('.wizard__sound-icon');
     
@@ -84,6 +89,7 @@ class MainController {
     window.addEventListener('scroll', this.scrollEvent);
 
     this.initializeStartButtons(this.introStartButtons);
+    this.mainScanButton.addEventListener("click", this.next.bind(this));
 
     this.documentClickEvent = this.documentClick.bind(this);
     document.body.addEventListener('mouseup', this.documentClickEvent, true);     
@@ -123,15 +129,15 @@ class MainController {
         },
         {
           name: "startWizard",
+          text: {
+            nl: "Plaats een object op het platform en druk op de knop.<br/>De objecten op dit scherm zijn al gescand.",
+            en: "Place on object on the platform and press the button.<br/>The objects on this screen have already been scanned.",
+            de: "Platzieren Sie ein Objekt auf der Plattform und drücken Sie den Knopf.<br/>Die Objekte auf diesem Bildschirm wurden bereits gescannt."
+          },
           execute: () => {
             this.hideIntro();
             this.showMain();
-            // this.showWizard();
-            // this.showMachineSections();
-          }
-        },
-        {
-          execute: () => {
+            this.showScanButton();
             if (localStorage.getItem('webcam_status') === null) {
               this.play("cameraInit");
               this.webcamEvent = this.webcamStatus.bind(this);
@@ -168,21 +174,40 @@ class MainController {
             GLOBALS.camInput.start();
           }
         },
-      ]
-    });
-
-    // Section 2 - Teaching first dataset
-    sections.push({
-      // title: {
-      //   en: "2. Teaching first dataset",
-      //   de: "2. Ersten Datensatz lehren"
-      // },
-      steps: [
         {
-          // text: {
-          //   en: "Stand in front of the camera and hold this green button for a couple of seconds.",
-          //   de: "Stellen Sie sich vor die Kamera und halten Sie diesen grünen Knopf einige Sekunden lang gedrückt. "
-          // },
+          name: "startTraining",
+          waitForEvent: true,
+          execute: () => {
+            this.hideScanButton();
+            let countDownNumber = 3 * 1000 / 16;
+            const countdownInterval = setInterval(() => {
+              this.showCountDown(countDownNumber * 16 / 1000, 3);
+              countDownNumber --;  
+        
+              // When countdown reaches 0, stop the interval and clear it
+              if (countDownNumber < 0) {
+                clearInterval(countdownInterval);  // Stop the countdown
+                this.hideCountDown()
+                this.next();
+              }
+            }, 16); 
+          }
+        },
+        {
+          execute: () => {
+            const text = {
+              en: "Scanning...",
+              de: "Scannen...",
+              nl: "Scannen..."
+            }
+            this.showCountDown(0.8, 1, text[GLOBALS.language])
+          }
+        },
+        {
+          text: {
+             en: "Stand in front of the camera and hold this green button for a couple of seconds.",
+             de: "Stellen Sie sich vor die Kamera und halten Sie diesen grünen Knopf einige Sekunden lang gedrückt. "
+          },
           name: "startTraining",
           waitForEvent: true,
           execute: () => {
@@ -274,6 +299,28 @@ class MainController {
     this.main.classList.add("hidden")
   }
 
+  showScanButton() {
+    this.mainScanButton.classList.remove("hidden");
+  }
+
+  hideScanButton() {
+    this.mainScanButton.classList.add("hidden");
+  }
+
+  showCountDown(currentValue, maxValue, text) {
+    this.setText("");
+    this.progressContainer.classList.remove("hidden");
+    const percentage = 100 * (maxValue - currentValue) / maxValue;
+    this.progressBar.style.width = percentage + '%';
+    
+    const counter = Math.ceil(currentValue);
+    const counterText = counter > 0 ? `${counter}...` : "";
+    this.progressLabel.innerHTML = text || counterText;
+  }
+  
+  hideCountDown() {
+    this.progressContainer.classList.add("hidden");
+  }
 
   showWizard() {
     this.wizardWrapper.classList.remove("hidden")

@@ -39,7 +39,7 @@ function init() {
   GLOBALS.language = localStorage.getItem("language") || "nl";
   
   GLOBALS.learningSection = new LearningSection(document.querySelector('#learning-section'));
-	GLOBALS.inputSection = new InputSection(document.querySelector('#input-section'));
+	GLOBALS.inputSection = new InputSection(document.querySelector('.main'));
 	GLOBALS.outputSection = new OutputSection(document.querySelector('#output-section'));
   
 	GLOBALS.inputSection.ready();

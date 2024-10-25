@@ -23,10 +23,10 @@ class InputSection {
     // this.micInputToggle.element.addEventListener('click', this.selectMicInput.bind(this));
     // this.camInputToggle.element.addEventListener('touchend', this.selectCamInput.bind(this));
     // this.micInputToggle.element.addEventListener('touchend', this.selectMicInput.bind(this));
-    this.mediaFlipButton = element.querySelector('.input__media__flip');
-    this.mediaFlipButton.addEventListener('click', this.flipCamera.bind(this));
+    //this.mediaFlipButton = element.querySelector('.input__media__flip');
+    //this.mediaFlipButton.addEventListener('click', this.flipCamera.bind(this));
 
-    this.inputContainer = element.querySelector('.input__media');
+    this.inputContainer = element.querySelector('.main-video');
 
     this.currentInput = null;
     // if (!GLOBALS.browserUtils.isMobile) {
@@ -223,12 +223,12 @@ class InputSection {
   }
 
   updateLanguage() {
-    const titleText = {
-      en: "Input",
-      de: "Eingabe"
-    };
-    const titleElement = this.element.querySelector('.section__title');
-    titleElement.textContent = titleText[GLOBALS.language];
+    // const titleText = {
+    //   en: "Input",
+    //   de: "Eingabe"
+    // };
+    // const titleElement = this.element.querySelector('.section__title');
+    // titleElement.textContent = titleText[GLOBALS.language];
   }
 }
 

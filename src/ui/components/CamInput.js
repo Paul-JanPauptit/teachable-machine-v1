@@ -15,12 +15,12 @@
 class CamInput {
   constructor() {
     this.element = document.createElement('div');
-    this.element.classList.add('input__camera');
+    this.element.classList.add('input-camera');
 
     this.webcamClassifier = new WebcamClassifier();
     this.element.appendChild(this.webcamClassifier.video);
     this.webcamClassifier.video.setAttribute('muted', 'true');
-    this.webcamClassifier.video.classList.add('input__camera-video');
+    this.webcamClassifier.video.classList.add('input-camera-video');
     this.webcamClassifier.video.addEventListener(
         'loadeddata', this.videoLoaded.bind(this));
     window.addEventListener('resize', this.size.bind(this));

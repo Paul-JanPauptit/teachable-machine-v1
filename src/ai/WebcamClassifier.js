@@ -206,14 +206,16 @@ export default class WebcamClassifier {
     let parentWidth = parent.offsetWidth;
     let parentHeight = parent.offsetHeight;
     let videoWidth = parentHeight * videoRatio;
-    this.video.style.width = videoWidth + 'px';
-    this.video.style.height = parentHeight + 'px';
-    this.video.style.transform = 'scaleX(' + flip + ') translate(' + (50 * flip * -1) + '%, -50%)';
+    
+    // Flip video - does not play nicely with css positioning. Disabled for now, not necessary for TM.
+    // this.video.style.width = videoWidth + 'px';
+    // this.video.style.height = parentHeight + 'px';
+    // this.video.style.transform = 'scaleX(' + flip + ') translate(' + (50 * flip * -1) + '%, -50%)';
 
     // If video is taller:
-    if (videoRatio < 1) {
-      this.video.style.transform = 'scale(' + (flip * 2) + ', 2) translate(' + (flip * 20 * -1) + '%, -30%)';
-    }
+    // if (videoRatio < 1) {
+    //   this.video.style.transform = 'scale(' + (flip * 2) + ', 2) translate(' + (flip * 20 * -1) + '%, -30%)';
+    // }
   }
 
   blur() {
