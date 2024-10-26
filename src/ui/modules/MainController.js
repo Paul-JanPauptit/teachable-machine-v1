@@ -56,7 +56,7 @@ class MainController {
     this.titleContainer = this.bar.querySelector('.wizard__text-title');
     this.soundButton = this.bar.querySelector('.wizard__sound-button');
     this.soundIcon = this.soundButton.querySelector('.wizard__sound-icon');
-    
+
     this.soundButton.addEventListener('click', this.toggleSound.bind(this));
 
     this.nextButton = this.bar.querySelector('.wizard__next-button');
@@ -66,7 +66,7 @@ class MainController {
     // this.restartButtonSmall = document.querySelector('#restart-machine-button-small');
     // this.restartButtonSmall.addEventListener('click', () => { this.restart(); });
 
-    this.sections = this.initializeSections()
+    this.sections = this.initializeSections();
 
 
     this.classTrainedEvent = this.classTrained.bind(this);
@@ -92,7 +92,7 @@ class MainController {
     this.mainScanButton.addEventListener("click", this.next.bind(this));
 
     this.documentClickEvent = this.documentClick.bind(this);
-    document.body.addEventListener('mouseup', this.documentClickEvent, true);     
+    document.body.addEventListener('mouseup', this.documentClickEvent, true);
 
     this.resizeEvent();
     this.scrollEvent();
@@ -131,8 +131,10 @@ class MainController {
           name: "startWizard",
           text: {
             nl: "Plaats een object op het platform en druk op de knop.<br/>De objecten op dit scherm zijn al gescand.",
-            en: "Place on object on the platform and press the button.<br/>The objects on this screen have already been scanned.",
-            de: "Platzieren Sie ein Objekt auf der Plattform und drücken Sie den Knopf.<br/>Die Objekte auf diesem Bildschirm wurden bereits gescannt."
+            en:
+              "Place on object on the platform and press the button.<br/>The objects on this screen have already been scanned.",
+            de:
+              "Platzieren Sie ein Objekt auf der Plattform und drücken Sie den Knopf. Die Objekte auf diesem Bildschirm wurden bereits gescannt."
           },
           execute: () => {
             this.hideIntro();
@@ -148,7 +150,8 @@ class MainController {
             } else if (localStorage.getItem('webcam_status') === 'denied') {
               const text = {
                 en: 'Seems like the camera isn’t working. It might be your browser or camera settings.',
-                de: "Scheint, als ob die Kamera nicht funktioniert. Dies können Ihre Browser- oder Kameraeinstellungen sein."
+                de:
+                  "Scheint, als ob die Kamera nicht funktioniert. Dies können Ihre Browser- oder Kameraeinstellungen sein."
               };
               this.setText(text);
             }
@@ -163,8 +166,7 @@ class MainController {
                 de: "Klicken Sie zuerst auf Zulassen, um Ihre Kamera einzuschalten."
               };
               this.setText(text);
-            }
-            else
+            } else
               this.play('cameraStart');
           }
         },
@@ -179,34 +181,66 @@ class MainController {
           waitForEvent: true,
           execute: () => {
             this.hideScanButton();
-            let countDownNumber = 3 * 1000 / 16;
-            const countdownInterval = setInterval(() => {
-              this.showCountDown(countDownNumber * 16 / 1000, 3);
-              countDownNumber --;  
-        
-              // When countdown reaches 0, stop the interval and clear it
-              if (countDownNumber < 0) {
-                clearInterval(countdownInterval);  // Stop the countdown
-                this.hideCountDown()
+
+            //// HACK, PJ: For UX testing
+            //this.next();
+            //return;
+
+            this.startCountdown(3,
+              (value) => {
+                this.showCountDown(value, 3);
+              },
+              () => {
                 this.next();
-              }
-            }, 16); 
+              });
           }
         },
         {
+          waitForEvent: true,
           execute: () => {
             const text = {
               en: "Scanning...",
               de: "Scannen...",
               nl: "Scannen..."
-            }
-            this.showCountDown(0.8, 1, text[GLOBALS.language])
+            };
+
+            this.startRecording();
+            this.startCountdown(5,
+              (value) => {
+                this.showCountDown(value, 5, text[GLOBALS.language]);
+              },
+              () => {
+                this.stopRecording();
+                this.next();
+              });
+          }
+        },
+        {
+          duration: 3,
+          execute: () => {
+            const text = {
+              en: "Object scanned...",
+              de: "Objekt gescannt...",
+              nl: "Object gescanned..."
+            };
+            this.showCountDown(0, 1, text[GLOBALS.language]);
+          }
+        },
+        {
+          waitForEvent: true,
+          text: {
+            en: "The robot is now telling you what it sees. If you change the object, it will also mention this. Scan another object by pressing the button, or reset all scans and start again.",
+            de: "Der Roboter sagt dir jetzt, was er sieht. Wenn du das Objekt wechselst, wird er das ebenfalls mitteilen. Scanne ein weiteres Objekt, indem du die Taste drückst, oder setze alle Scans zurück und beginne von vorne.",
+            nl: "De robot vertelt je nu wat hij ziet. Als je het object wisselt zal hij dit ook vertellen. Scan nog een object door op de knop te drukken. Of reset alle scans en begin opnieuw."
+          },
+          execute: () => {
+            this.hideCountDown();
           }
         },
         {
           text: {
-             en: "Stand in front of the camera and hold this green button for a couple of seconds.",
-             de: "Stellen Sie sich vor die Kamera und halten Sie diesen grünen Knopf einige Sekunden lang gedrückt. "
+            en: "Stand in front of the camera and hold this green button for a couple of seconds.",
+            de: "Stellen Sie sich vor die Kamera und halten Sie diesen grünen Knopf einige Sekunden lang gedrückt. "
           },
           name: "startTraining",
           waitForEvent: true,
@@ -259,7 +293,7 @@ class MainController {
             GLOBALS.learningSection.enableClass(2);
             GLOBALS.learningSection.highlightClass(2);
           }
-        },
+        }
       ]
     });
 
@@ -284,19 +318,19 @@ class MainController {
   }
 
   showIntro() {
-    this.intro.classList.remove("hidden")
+    this.intro.classList.remove("hidden");
   }
 
   hideIntro() {
-    this.intro.classList.add("hidden")
+    this.intro.classList.add("hidden");
   }
 
   showMain() {
-    this.main.classList.remove("hidden")
+    this.main.classList.remove("hidden");
   }
 
   hideMain() {
-    this.main.classList.add("hidden")
+    this.main.classList.add("hidden");
   }
 
   showScanButton() {
@@ -307,35 +341,67 @@ class MainController {
     this.mainScanButton.classList.add("hidden");
   }
 
+  startCountdown(seconds, onUpdate, onFinished) {
+
+    const startTime = new Date();
+    const countdownInterval = setInterval(() => {
+      const time = new Date();
+      const elapsedSeconds = Math.max(seconds - (time - startTime) / 1000, 0);
+      onUpdate(elapsedSeconds);
+      if (elapsedSeconds === 0) {
+        clearInterval(countdownInterval);
+        this.hideCountDown();
+        onFinished();
+      }
+    },
+      16);
+  }
+
   showCountDown(currentValue, maxValue, text) {
     this.setText("");
     this.progressContainer.classList.remove("hidden");
     const percentage = 100 * (maxValue - currentValue) / maxValue;
     this.progressBar.style.width = percentage + '%';
-    
+
     const counter = Math.ceil(currentValue);
     const counterText = counter > 0 ? `${counter}...` : "";
     this.progressLabel.innerHTML = text || counterText;
   }
-  
+
+  startRecording() {
+    GLOBALS.recording = true;
+    GLOBALS.classId = this.id;
+
+    // TODO, PJ: Probably should have a wrapper object
+    // TODO, PJ: dynamically select based on current index
+    const previewContainer = document.querySelector(".main-object.object_1");
+
+    GLOBALS.webcamClassifier.startRecording("object1", previewContainer);
+  }
+
+  stopRecording() {
+    GLOBALS.recording = false;
+    GLOBALS.webcamClassifier.stopRecording("object1");
+  }
+
   hideCountDown() {
     this.progressContainer.classList.add("hidden");
   }
 
   showWizard() {
-    this.wizardWrapper.classList.remove("hidden")
+    this.wizardWrapper.classList.remove("hidden");
   }
 
   hideWizard() {
-    this.wizardWrapper.classList.add("hidden")
+    this.wizardWrapper.classList.add("hidden");
   }
 
   showMachineSections() {
-    this.machineSections.classList.remove("hidden")
+    this.machineSections.classList.remove("hidden");
   }
 
   hideMachineSections() {
-    this.machineSections.classList.add("hidden")
+    this.machineSections.classList.add("hidden");
   }
 
 
@@ -375,8 +441,7 @@ class MainController {
 
     this.lastActivityTime = Date.now();
     // Allow the user to click anywhere on the screen, if we are waiting for the next step. 
-    if (this.waitingForNextClick)
-    {
+    if (this.waitingForNextClick) {
       event.preventDefault();
       event.stopPropagation();
       this.next();
@@ -492,7 +557,7 @@ class MainController {
     this.timer.style.display = (step.duration && step.execute) ? "block" : "none";
 
     if (step.text)
-      this.setText(step.text, step.title || section.title, { textContainer: step.textContainer, titleContainer: step.titleContainer });
+      this.setText(step.text || "", step.title || section.title, { textContainer: step.textContainer, titleContainer: step.titleContainer });
     if (step.execute) {
       step.execute();
     }
@@ -503,14 +568,14 @@ class MainController {
 
   calculateGroupDuration() {
     var section = this.sections[this.sectionIndex];
-    
+
     var stepIndex = this.stepIndex;
     var groupWithNext = true;
     var duration = 0;
     while (groupWithNext) {
       var step = section.steps[stepIndex++];
       duration += (step.duration || 0);
-      var groupWithNext = step.groupWithNext
+      groupWithNext = step.groupWithNext;
     }
     return duration;
   }
@@ -525,7 +590,7 @@ class MainController {
             section: section,
             step: step,
             sectionIndex: sectionIndex,
-            stepIndex: stepIndex,
+            stepIndex: stepIndex
           };
       }
     }
@@ -569,8 +634,8 @@ class MainController {
     this.title = title;
     this.textElements = elements;
 
-    var messageText = message ? message[GLOBALS.language] : "";
-    
+    var messageText = message ? message[GLOBALS.language] || "" : "";
+
     var textElement = (elements && elements.textContainer) || this.textContainer;
     textElement.innerHTML = messageText;
 
@@ -600,7 +665,6 @@ class MainController {
   }
 
   webcamStatus(event) {
-    let that = this;
     if (event.detail.granted === true) {
       localStorage.setItem('webcam_status', 'granted');
       this.play("cameraStart");
@@ -614,12 +678,12 @@ class MainController {
   start() {
     this.wizardRunning = true;
     this.soundButton.style.display = 'block';
-    this.play();
+    this.play();   // HACK, PJ: For testing purposes
     this.startAudioTimer();
     this.updateLanguage();
 
     // Restart the wizard whenever there is 2 minutes of inactivity 
-    setTimeout(this.checkAutoRestart.bind(this), 1000); 
+    setTimeout(this.checkAutoRestart.bind(this), 1000);
   }
 
   restart() {
@@ -643,7 +707,7 @@ class MainController {
 
     var section = this.sections[this.sectionIndex];
     if (!section)
-        return;
+      return;
     this.stepIndex++;
 
     if (this.stepIndex >= section.steps.length) {

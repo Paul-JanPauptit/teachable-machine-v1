@@ -35,15 +35,10 @@ export default class WebcamClassifier {
     this.timer = null;
     this.active = false;
     this.wasActive = false;
-    this.latestCanvas = document.createElement('canvas');
-    this.latestCanvas.width = 98;
-    this.latestCanvas.height = 98;
-    this.latestContext = this.latestCanvas.getContext('2d');
-    this.thumbCanvas = document.createElement('canvas');
-    this.thumbCanvas.width = Math.floor(this.latestCanvas.width / 3) + 1;
-    this.thumbCanvas.height = Math.floor(this.latestCanvas.height / 3) + 1;
-    this.thumbContext = this.thumbCanvas.getContext('2d');
-    this.thumbVideoX = 0;
+//    this.latestCanvas = document.createElement('canvas');
+//    this.latestCanvas.width = 98;
+//    this.latestCanvas.height = 98;
+//    this.latestContext = this.latestCanvas.getContext('2d');
     this.classNames = GLOBALS.classNames;
     this.images = {};
     for (let index = 0; index < this.classNames.length; index += 1) {
@@ -58,7 +53,7 @@ export default class WebcamClassifier {
     }
     this.isDown = false;
     this.current = null;
-    this.currentClass = null;
+    // this.currentClass = null;
     this.measureTimingCounter = 0;
     this.lastFrameTimeMs = 1000;
     this.classIndices = {};
@@ -230,26 +225,44 @@ export default class WebcamClassifier {
     }
   }
 
-  buttonDown(id, canvas, learningClass) {
-    this.current = this.images[id];
-    this.current.down = true;
-    this.isDown = true;
-    this.training = this.current.index;
+  startRecording(id, previewElement /*, learningClass*/) {
+    let previewCanvas = previewElement.querySelector("canvas");
+    if (previewCanvas == null) {
+      previewCanvas = document.createElement('canvas');
+      previewCanvas.width = previewElement.clientWidth;
+      previewCanvas.height = previewElement.clientHeight;
+      previewElement.appendChild(previewCanvas);
+    }
+    this.currentContext = previewCanvas.getContext('2d');
+
+    if (this.thumbCanvas == null) {
+      this.thumbCanvas = document.createElement('canvas');
+      // Grid of 3x3 little thumbs
+      this.thumbCanvas.width = Math.floor(previewCanvas.width / 3) + 1;
+      this.thumbCanvas.height = Math.floor(previewCanvas.height / 3) + 1;
+      this.thumbContext = this.thumbCanvas.getContext('2d');
+      this.thumbVideoX = 0;
+    }
 
     this.videoRatio = this.video.videoWidth / this.video.videoHeight;
-    this.currentClass = learningClass;
-    this.canvasWidth = canvas.width;
-    this.canvasHeight = canvas.height;
+    // this.currentClass = learningClass;
+    this.canvasWidth = previewCanvas.width;
+    this.canvasHeight = previewCanvas.height;
     this.videoWidth = this.canvasHeight * this.videoRatio;
 
     this.thumbVideoHeight = this.canvasHeight / 3;
     this.thumbVideoWidth = this.canvasWidth / 3;
     this.thumbVideoWidthReal = this.thumbVideoHeight * this.videoRatio;
     this.thumbVideoX = -(this.thumbVideoWidthReal - this.thumbVideoWidth) / 2;
-    this.currentContext = this.currentClass.canvas.getContext('2d');
+
+    // Order is important
+    this.current = this.images[id];
+    this.training = this.current.index;
+    this.current.down = true;
+    this.isDown = true;
   }
 
-  buttonUp(id) {
+  stopRecording(id) {
     this.images[id].down = false;
     this.isDown = false;
     this.training = -1;
@@ -286,7 +299,7 @@ export default class WebcamClassifier {
     
     if (this.isDown) {
       this.current.imagesCount += 1;
-      this.currentClass.setSamples(this.current.imagesCount);
+      // this.currentClass.setSamples(this.current.imagesCount);
       if (this.current.latestThumbs.length > 8) {
         this.current.latestThumbs.shift();
       }
@@ -301,9 +314,11 @@ export default class WebcamClassifier {
       this.current.latestThumbs.push(data);
       let cols = 0;
       let rows = 0;
+      this.currentContext.fillStyle = "black";
+      this.currentContext.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
       for (let index = 0; index < this.current.latestThumbs.length; index += 1) {
         this.currentContext.putImageData(
-          this.current.latestThumbs[index], (2 - cols) * this.thumbCanvas.width,
+          this.current.latestThumbs[index], cols * this.thumbCanvas.width,
           rows * this.thumbVideoHeight, 0, 0, this.thumbCanvas.width,
           this.thumbCanvas.height);
         if (cols === 2) {

@@ -28,10 +28,12 @@ let GLOBALS = {
 		}
 	},
 	classNames: [
-	'green',
-	'purple',
-	'orange',
-	'red'
+	    'object1',
+        'object2',
+        'object3',
+        'object4',
+        'object5',
+        'object6'
 	],
 	colors: {
 		'green': '#2baa5e',

@@ -73,11 +73,16 @@
 
   font-family: $titleFont;
   font-size: 43px;
-  
-  line-height: 120%
+    
+  line-height: 120%;
   align-content: center;
   justify-items: center;
   color: $color__black;
+}
+
+.main-text {
+  display: inline-block;
+  width: 1240px;
 }
 
 .main-panel-left {
@@ -104,7 +109,8 @@
 
 .main-object {
 	background-color: white;
-	border: 4px dashed $color__theme--dark; 
+	border: 4px dashed $color__theme--dark;
+	display: flex;
 }
 
 .main-video {
@@ -118,13 +124,12 @@
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    font-size: 45px;
-    background-color: black;
-    padding: 20px 110px;
-    border-radius: 100px;
+    font-size: 60px;
+    background-color: $color__theme--dark;
+    padding: 36px 90px;
     box-sizing: content-box;
-    color: white;	
-	pointer: cursor;
+    color: white;
+  	cursor: pointer;
 }
 
 .main-scan-button:active {
@@ -148,6 +153,7 @@
 }
 
 .main-progress-label {
+	font-family: $font;
 	position: absolute;
 	left: 50%;
 	top: 50%;
