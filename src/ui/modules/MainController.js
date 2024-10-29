@@ -48,6 +48,9 @@ class MainController {
     this.introStartButtons = this.intro.querySelectorAll('.intro-start-button');
     this.main = document.querySelector('.main');
     this.mainScanButton = this.main.querySelector('.main-scan-button');
+    this.mainSmallResetButton = this.main.querySelector('.main-small-reset-button');
+    this.mainSmallScanButton = this.main.querySelector('.main-small-scan-button');
+
     this.textContainer = this.main.querySelector('.main-text');
     this.progressContainer = this.main.querySelector('.main-progress-container');
     this.progressBar = this.progressContainer.querySelector('.main-progress-bar');
@@ -90,9 +93,8 @@ class MainController {
 
     this.initializeStartButtons(this.introStartButtons);
     this.mainScanButton.addEventListener("click", this.next.bind(this));
-
-    this.documentClickEvent = this.documentClick.bind(this);
-    document.body.addEventListener('mouseup', this.documentClickEvent, true);
+    this.mainSmallScanButton.addEventListener("click", () => this.play("startTraining"));
+    this.mainSmallResetButton.addEventListener("click", this.restart.bind(this));
 
     this.resizeEvent();
     this.scrollEvent();
@@ -123,6 +125,7 @@ class MainController {
           execute: () => {
             this.showIntro();
             this.hideMain();
+            this.hideSmallNavigationButtons();
             this.hideWizard();
             this.hideMachineSections();
           }
@@ -181,6 +184,7 @@ class MainController {
           waitForEvent: true,
           execute: () => {
             this.hideScanButton();
+            this.hideSmallNavigationButtons();
 
             //// HACK, PJ: For UX testing
             //this.next();
@@ -234,6 +238,7 @@ class MainController {
             nl: "De robot vertelt je nu wat hij ziet. Als je het object wisselt zal hij dit ook vertellen. Scan nog een object door op de knop te drukken. Of reset alle scans en begin opnieuw."
           },
           execute: () => {
+            this.showSmallNavigationButtons();
             this.hideCountDown();
           }
         },
@@ -310,8 +315,6 @@ class MainController {
         GLOBALS.inputSection.updateLanguage();
         GLOBALS.learningSection.updateLanguage();
         GLOBALS.outputSection.updateLanguage();
-
-        GLOBALS.preventDocumentClick = true;
         this.next();
       });
     });
@@ -330,7 +333,7 @@ class MainController {
   }
 
   hideMain() {
-    this.main.classList.add("hidden");
+    this.hideSmallNavigationButtons();
   }
 
   showScanButton() {
@@ -340,6 +343,17 @@ class MainController {
   hideScanButton() {
     this.mainScanButton.classList.add("hidden");
   }
+
+  showSmallNavigationButtons() {
+    this.mainSmallResetButton.classList.remove("hidden");
+    this.mainSmallScanButton.classList.remove("hidden");
+  }
+
+  hideSmallNavigationButtons() {
+    this.mainSmallResetButton.classList.add("hidden");
+    this.mainSmallScanButton.classList.add("hidden");
+  }
+
 
   startCountdown(seconds, onUpdate, onFinished) {
 
@@ -430,21 +444,6 @@ class MainController {
       this.unstickBar();
     } else {
       this.stickBar();
-    }
-  }
-
-  documentClick(event) {
-    const isPrevented = (GLOBALS.preventDocumentClick === true);
-    GLOBALS.preventDocumentClick = false;
-    if (isPrevented)
-      return;
-
-    this.lastActivityTime = Date.now();
-    // Allow the user to click anywhere on the screen, if we are waiting for the next step. 
-    if (this.waitingForNextClick) {
-      event.preventDefault();
-      event.stopPropagation();
-      this.next();
     }
   }
 
@@ -789,8 +788,6 @@ class MainController {
 
     window.removeEventListener('resize', this.resizeEvent);
     window.removeEventListener('scroll', this.scrollEvent);
-
-    document.body.removeEventListener('mouseup', this.documentClickEvent, true);
 
     this.restartButton.style.display = 'inline-block';
   }

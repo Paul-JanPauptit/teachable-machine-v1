@@ -31,7 +31,7 @@
                     <button type="button" class="intro-start-button" data-language="en">EN</button>
                 </div>
             </div>
-            <div class="main">
+            <div class="main hidden">
                 <div class="main-header">
                     <span class="main-text">...</span>
                     <div class="main-progress-container hidden">
@@ -45,8 +45,10 @@
                     <div class="main-object object_3"></div>
                 </div>
                 <div class="main-panel-video">
-                    <div class="main-video"></div>
-                    <button type="button" class="main-scan-button">Scan</button>
+                  <div class="main-video"></div>
+                  <button type="button" class="main-scan-button">Scan</button>
+                  <button type="button" class="main-small-reset-button hidden">Reset</button>
+                  <button type="button" class="main-small-scan-button hidden">Scan</button>
                 </div>
                 <div class="main-panel-right main-side-panel">
                     <div class="main-object object_4"></div>
@@ -54,7 +56,7 @@
                     <div class="main-object object_6"></div>
                 </div>                
             </div>
-            <div class="machine__sections">
+            <div class="machine__sections hidden">
                 <div id="input-section" class="section section--disabled input section--input">
                     <h2 class="section__title"><span>Input</span></h2>
                     <div class="section__container">
@@ -236,7 +238,7 @@
             </div> -->
             <!-- <a href="#" class="machine__restart-button-small" id="restart-machine-button-small">Restart</a> -->
         </div>
-        <div class="wizard__wrapper">
+        <div class="wizard__wrapper hidden">
             <div class="wizard" id="wizard">
                 <div class="wizard__inner">
                     <a href="#" class="wizard__sound-button">
