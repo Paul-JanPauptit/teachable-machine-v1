@@ -112,6 +112,10 @@
 	display: flex;
 }
 
+.main-object.scanned {
+	border-style: solid;
+}
+
 .main-video {
 	position: relative;
 	width: 100%;
@@ -195,6 +199,27 @@
   width: 100%;
   height: 100%;
   object-fit: cover;  
+}
+
+.object1, .object2, .object3, .object4, .object5, .object6 {
+	/* Just to let the compiler know these are known styles */
+	display: flex;
+}
+
+.triggered {
+  animation: soft-glow 2s infinite;
+}
+
+@keyframes soft-glow {
+  0% {
+    box-shadow: 0 0 12px 0 transparent;
+  }
+  50% {
+    box-shadow: 0 0 12px 4px $color__theme--dark; 
+  }
+  100% {
+    box-shadow: 0 0 12px 0 transparent;
+  }
 }
 
 .machine {

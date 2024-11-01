@@ -40,6 +40,8 @@ class MainController {
     this.audio.addEventListener('canplaythrough', this.loadedEvent);
     this.audio.src = 'assets/wizard/voice-over.mp3';
 
+    this.currentObjectIndex = 1;
+
     this.wizardWrapper = document.querySelector('.wizard__wrapper');
     this.bar = document.querySelector('#wizard');
     this.machine = document.querySelector('.machine');
@@ -64,18 +66,12 @@ class MainController {
 
     this.nextButton = this.bar.querySelector('.wizard__next-button');
 
-    // this.restartButton = document.querySelector('#restart-machine-button');
-    // this.restartButton.addEventListener('click', () => { this.restart(); });
-    // this.restartButtonSmall = document.querySelector('#restart-machine-button-small');
-    // this.restartButtonSmall.addEventListener('click', () => { this.restart(); });
-
     this.sections = this.initializeSections();
-
-
-    this.classTrainedEvent = this.classTrained.bind(this);
 
     this.numTriggered = 0;
     this.lastClassTriggered = null;
+
+    this.lastActivityTime = Date.now();
 
     this.activateWebcamButton = document.getElementById('input__media__activate');
     this.activateWebcamButton.style.display = 'none';
@@ -93,8 +89,10 @@ class MainController {
 
     this.initializeStartButtons(this.introStartButtons);
     this.mainScanButton.addEventListener("click", this.next.bind(this));
-    this.mainSmallScanButton.addEventListener("click", () => this.play("startTraining"));
+    this.mainSmallScanButton.addEventListener("click", this.scanNext.bind(this));
     this.mainSmallResetButton.addEventListener("click", this.restart.bind(this));
+
+    window.addEventListener('class-triggered', this.classTriggered.bind(this));
 
     this.resizeEvent();
     this.scrollEvent();
@@ -108,19 +106,6 @@ class MainController {
     sections.push({
       steps: [
         {
-          // Support for language switching in the title screen is turned off for now, fixed language  
-          // title: {
-          //   nl: "Teachable Machine NL",
-          //   en: "Teachable Machine EN",
-          //   de: "Teachable Machine DE",
-          // },
-          // text: {
-          //   nl: "Nederlands Morbi interdum mollis sapien. Sed ac risus. Phasellus lacinia, magna a ullamcorper laoreet, lectus arcu pulvinar risus, vitae facilisis libero dolor a purus. Sed vel lacus. Mauris nibh felis, adipiscing varius, adipiscing in, lacinia vel, tellus. Suspendisse ac urna. Etiam pellentesque mauris ut lectus. Nunc tellus ante, mattis eget, gravida vitae, ultricies ac, leo. Integer leo pede, ornare a, lacinia eu, vulputate vel, nisl.<br/><br/>Suspendisse mauris. Fusce accumsan mollis eros. Pellentesque a diam sit amet mi ullamcorper vehicula. Integer adipiscing risus a sem. Nullam quis massa sit amet nibh viverra malesuada. Nunc sem lacus, accumsan quis, faucibus non, congue vel, arcu. Ut scelerisque hendrerit tellus. Integer sagittis. Vivamus a mauris eget arcu gravida tristique. Nunc iaculis mi in ante. Vivamus imperdiet nibh feugiat est.",
-          //   en: "English Morbi interdum mollis sapien. Sed ac risus. Phasellus lacinia, magna a ullamcorper laoreet, lectus arcu pulvinar risus, vitae facilisis libero dolor a purus. Sed vel lacus. Mauris nibh felis, adipiscing varius, adipiscing in, lacinia vel, tellus. Suspendisse ac urna. Etiam pellentesque mauris ut lectus. Nunc tellus ante, mattis eget, gravida vitae, ultricies ac, leo. Integer leo pede, ornare a, lacinia eu, vulputate vel, nisl.<br/><br/>Suspendisse mauris. Fusce accumsan mollis eros. Pellentesque a diam sit amet mi ullamcorper vehicula. Integer adipiscing risus a sem. Nullam quis massa sit amet nibh viverra malesuada. Nunc sem lacus, accumsan quis, faucibus non, congue vel, arcu. Ut scelerisque hendrerit tellus. Integer sagittis. Vivamus a mauris eget arcu gravida tristique. Nunc iaculis mi in ante. Vivamus imperdiet nibh feugiat est.",
-          //   de: "Deutsch Morbi interdum mollis sapien. Sed ac risus. Phasellus lacinia, magna a ullamcorper laoreet, lectus arcu pulvinar risus, vitae facilisis libero dolor a purus. Sed vel lacus. Mauris nibh felis, adipiscing varius, adipiscing in, lacinia vel, tellus. Suspendisse ac urna. Etiam pellentesque mauris ut lectus. Nunc tellus ante, mattis eget, gravida vitae, ultricies ac, leo. Integer leo pede, ornare a, lacinia eu, vulputate vel, nisl.<br/><br/>Suspendisse mauris. Fusce accumsan mollis eros. Pellentesque a diam sit amet mi ullamcorper vehicula. Integer adipiscing risus a sem. Nullam quis massa sit amet nibh viverra malesuada. Nunc sem lacus, accumsan quis, faucibus non, congue vel, arcu. Ut scelerisque hendrerit tellus. Integer sagittis. Vivamus a mauris eget arcu gravida tristique. Nunc iaculis mi in ante. Vivamus imperdiet nibh feugiat est."
-          // },
-          // textContainer: this.introTextContainer,
-          // titleContainer: this.introTitleContainer,
           waitForEvent: true,
           execute: () => {
             this.showIntro();
@@ -185,10 +170,7 @@ class MainController {
           execute: () => {
             this.hideScanButton();
             this.hideSmallNavigationButtons();
-
-            //// HACK, PJ: For UX testing
-            //this.next();
-            //return;
+            GLOBALS.learningSection.stopRecognition();
 
             this.startCountdown(3,
               (value) => {
@@ -220,8 +202,9 @@ class MainController {
           }
         },
         {
-          duration: 3,
+          duration: 2,
           execute: () => {
+            this.getCurrentPreviewContainer().classList.add("scanned");
             const text = {
               en: "Object scanned...",
               de: "Objekt gescannt...",
@@ -238,65 +221,9 @@ class MainController {
             nl: "De robot vertelt je nu wat hij ziet. Als je het object wisselt zal hij dit ook vertellen. Scan nog een object door op de knop te drukken. Of reset alle scans en begin opnieuw."
           },
           execute: () => {
+            GLOBALS.learningSection.startRecognition();
             this.showSmallNavigationButtons();
             this.hideCountDown();
-          }
-        },
-        {
-          text: {
-            en: "Stand in front of the camera and hold this green button for a couple of seconds.",
-            de: "Stellen Sie sich vor die Kamera und halten Sie diesen grünen Knopf einige Sekunden lang gedrückt. "
-          },
-          name: "startTraining",
-          waitForEvent: true,
-          execute: () => {
-            window.addEventListener('class-trained', this.classTrainedEvent);
-            GLOBALS.learningSection.enableClass(0);
-            GLOBALS.learningSection.highlightClass(0);
-          }
-        },
-        {
-          name: "greenTrained",
-          // text: {
-          //   en: 'You should now see the green bar and the robot GIF.',
-          //   de: "Sie sollten jetzt die grüne Leiste und das Roboter-Bild sehen."
-          // },
-          execute: () => {
-            GLOBALS.learningSection.dehighlightClass(0);
-          }
-        },
-        {
-          // text: {
-          //   en: "Now pick up the stick figure with the cat image and hold it in front of the camera. While doing so, press this purple button for a couple of seconds.",
-          //   de: "Nehmen Sie nun das Schildchen mit dem Katzenbild und halten Sie es vor die Kamera. Drücken Sie dabei einige Sekunden lang auf das violette Feld."
-          // },
-          waitForEvent: true,
-          execute: () => {
-            window.addEventListener('class-trained', this.classTrainedEvent);
-            GLOBALS.learningSection.enableClass(1);
-            GLOBALS.learningSection.highlightClass(1);
-          }
-        },
-        {
-          name: "purpleTrained",
-          // text: {
-          //   en: 'You should see the cat GIF when you hold up the cat figure, and the robot GIF when you don´t show it. Try it.',
-          //   de: "Sie sollten das Katzen-Bild sehen, wenn Sie die Katzenfigur hochhalten, und das Roboter-Bild, wenn Sie es nicht tun. Versuchen Sie es."
-          // },
-          execute: () => {
-            GLOBALS.learningSection.dehighlightClass(1);
-          }
-        },
-        {
-          // text: {
-          //   en: "Now pick up the stick figure with the dog image and hold it in front of the camera. While doing so, press the orange button for a couple of seconds.",
-          //   de: "Nehmen Sie nun das Schildchen mit dem Hundebild und halten Sie es vor die Kamera. Drücken Sie dabei einige Sekunden lang das orangene Feld."
-          // },
-          waitForEvent: true,
-          execute: () => {
-            window.addEventListener('class-trained', this.classTrainedEvent);
-            GLOBALS.learningSection.enableClass(2);
-            GLOBALS.learningSection.highlightClass(2);
           }
         }
       ]
@@ -314,7 +241,6 @@ class MainController {
         GLOBALS.mainController.updateLanguage();
         GLOBALS.inputSection.updateLanguage();
         GLOBALS.learningSection.updateLanguage();
-        GLOBALS.outputSection.updateLanguage();
         this.next();
       });
     });
@@ -386,16 +312,22 @@ class MainController {
     GLOBALS.recording = true;
     GLOBALS.classId = this.id;
 
-    // TODO, PJ: Probably should have a wrapper object
-    // TODO, PJ: dynamically select based on current index
-    const previewContainer = document.querySelector(".main-object.object_1");
-
-    GLOBALS.webcamClassifier.startRecording("object1", previewContainer);
+    const previewContainer = this.getCurrentPreviewContainer();
+    GLOBALS.webcamClassifier.startRecording(this.getCurrentObjectName(), previewContainer);
   }
 
   stopRecording() {
     GLOBALS.recording = false;
-    GLOBALS.webcamClassifier.stopRecording("object1");
+    GLOBALS.webcamClassifier.stopRecording(this.getCurrentObjectName());
+  }
+
+  getCurrentObjectName() {
+    return `object${this.currentObjectIndex}`;
+  }
+
+  getCurrentPreviewContainer() {
+    const currentObjectName = this.getCurrentObjectName();
+    return document.querySelector(`.main-object.${currentObjectName}`);
   }
 
   hideCountDown() {
@@ -447,57 +379,35 @@ class MainController {
     }
   }
 
-  classTriggered(event) {
-    let id = event.detail.id;
+  highlightTriggeredClass(id) {
+    const elements = document.querySelectorAll('.main-object');
+    elements.forEach(element => {
+      element.classList.remove('triggered');
+    });
+    if (id) {
+      const triggeredElement = document.querySelector(`.main-object.${id}`);
+      triggeredElement.classList.add("triggered");
+    }
+  }
 
+  classTriggered(event) {
+    const id = event.detail.id;
+    console.log(`Class ${id} was triggered`);
+
+    this.highlightTriggeredClass(id);
+
+    /*
     if (id !== this.lastClassTriggered) {
       this.lastClassTriggered = id;
       this.numTriggered += 1;
     }
 
     if (this.numTriggered > 4 && !this.triggerTimer) {
-      GLOBALS.outputSection.stopWizardMode();
       this.triggerTimer = setTimeout(() => {
         this.play("classTriggered");
       }, 1500);
     }
-  }
-
-  classTrained(event) {
-    let id = event.detail.id;
-    let numSamples = event.detail.numSamples;
-
-    if (numSamples < 30) {
-      var text = {
-        en: "Your machine will work best with at least 30 examples per class. Try recording some more.",
-        de: "Ihre Maschine funktioniert am besten mit mindestens 30 Beispielen pro Klasse. Versuchen Sie, noch einige mehr aufzunehmen."
-      };
-      this.setText(text);
-      return;
-    }
-
-    if (id === 'green' && numSamples >= 30 && !this.greenDone) {
-      this.greenDone = true;
-      GLOBALS.learningSection.dehighlightClass(0);
-      GLOBALS.inputSection.hideGif(0);
-      this.play("greenTrained");
-      window.removeEventListener('class-trained', this.classTrainedEvent);
-    }
-
-    if (id === 'purple' && numSamples >= 30) {
-      GLOBALS.learningSection.dehighlightClass(1);
-      GLOBALS.inputSection.hideGif(1);
-      this.play("purpleTrained");
-      window.removeEventListener('class-trained', this.classTrainedEvent);
-    }
-
-    if (id === 'orange' && numSamples >= 30) {
-      GLOBALS.learningSection.dehighlightClass(2);
-      GLOBALS.inputSection.hideGif(2);
-      this.play("startTraining");
-      window.removeEventListener('class-trained', this.classTrainedEvent);
-    }
-
+    */
   }
 
   toggleSound(event) {
@@ -677,12 +587,19 @@ class MainController {
   start() {
     this.wizardRunning = true;
     this.soundButton.style.display = 'block';
-    this.play();   // HACK, PJ: For testing purposes
+    this.play();  
     this.startAudioTimer();
     this.updateLanguage();
 
     // Restart the wizard whenever there is 2 minutes of inactivity 
     setTimeout(this.checkAutoRestart.bind(this), 1000);
+  }
+
+  scanNext() {
+    this.currentObjectIndex++;
+    if (this.currentObjectIndex > 6)
+      this.currentObjectIndex = 1;
+    this.play("startTraining");
   }
 
   restart() {
@@ -691,18 +608,18 @@ class MainController {
   }
 
   checkAutoRestart() {
-    // Automatic restart is disabled in this version of the teachable machine
-    return false;
-    // var inactiveTime = (Date.now() - this.lastActivityTime) / 1000; 
-    // if (inactiveTime > 2 * 60) // 2 minutes in seconds
-    //   this.restart();
-    // else 
-    //   setTimeout(this.checkAutoRestart.bind(this), 1000);
+    const inactiveTime = (Date.now() - this.lastActivityTime) / 1000; 
+    if (inactiveTime > 2 * 60) // 2 minutes in seconds
+      this.restart();
+    else 
+      setTimeout(this.checkAutoRestart.bind(this), 1000);
   }
 
   next() {
     if (!this.wizardRunning)
       return;
+
+    this.lastActivityTime = Date.now();
 
     var section = this.sections[this.sectionIndex];
     if (!section)
@@ -782,9 +699,6 @@ class MainController {
     GLOBALS.learningSection.enableClass(1);
     GLOBALS.learningSection.enableClass(2);
     GLOBALS.learningSection.undim();
-    GLOBALS.outputSection.dehighlight();
-    GLOBALS.outputSection.enable();
-    GLOBALS.outputSection.undim();
 
     window.removeEventListener('resize', this.resizeEvent);
     window.removeEventListener('scroll', this.scrollEvent);

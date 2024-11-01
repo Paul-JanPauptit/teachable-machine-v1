@@ -13,10 +13,6 @@
 // limitations under the License.
 
 /* eslint-disable camelcase, max-lines,  */
-const IMAGE_SIZE = 227;
-const INPUT_SIZE = 1000;
-const TOPK = 10;
-const CLASS_COUNT = 3;
 const MEASURE_TIMING_EVERY_NUM_FRAMES = 20;
 
 function passThrough() {
@@ -29,9 +25,6 @@ export default class WebcamClassifier {
     this.video = document.createElement('video');
     this.video.setAttribute('autoplay', '');
     this.video.setAttribute('playsinline', '');
-    this.blankCanvas = document.createElement('canvas');
-    this.blankCanvas.width = 227;
-    this.blankCanvas.height = 227;
     this.timer = null;
     this.active = false;
     this.wasActive = false;
@@ -99,8 +92,8 @@ export default class WebcamClassifier {
         this.video.addEventListener('loadedmetadata', this.videoLoaded.bind(this));
         this.video.muted = true;
         this.video.srcObject = stream;
-        this.video.width = 227;
-        this.video.height = 227;
+        this.video.width = 212;
+        this.video.height = 192;
 
         let event = new CustomEvent('webcam-status', {detail: {granted: true}});
         window.dispatchEvent(event);
@@ -233,6 +226,7 @@ export default class WebcamClassifier {
       previewCanvas.height = previewElement.clientHeight;
       previewElement.appendChild(previewCanvas);
     }
+    this.currentCanvas = previewCanvas;
     this.currentContext = previewCanvas.getContext('2d');
 
     if (this.thumbCanvas == null) {
@@ -267,6 +261,8 @@ export default class WebcamClassifier {
     this.isDown = false;
     this.training = -1;
 
+    this.takeScreenshot();
+
     this.current = null;
     this.currentContext = null;
     this.currentClass = null;
@@ -290,6 +286,19 @@ export default class WebcamClassifier {
     if (GLOBALS.soundOutput && GLOBALS.soundOutput.muteSounds) {
         GLOBALS.soundOutput.muteSounds();
     }
+  }
+
+  takeScreenshot() {
+    // We take a screenshot that is the exact size of the preview in stead of a little preview
+    const videoWidth = this.video.videoWidth;
+    const videoHeight = this.video.videoHeight;
+    const canvasWidth = this.canvasWidth;
+    const canvasHeight = this.canvasHeight;
+
+    const scale = canvasHeight / videoHeight;
+    const offsetX = 0.5 * (scale * videoWidth - canvasWidth);
+
+    this.currentContext.drawImage(this.video, offsetX, 0, canvasWidth / scale, videoHeight, 0, 0, canvasWidth, canvasHeight);
   }
 
   async animate() {

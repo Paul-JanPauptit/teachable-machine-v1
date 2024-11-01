@@ -178,6 +178,15 @@ class LearningSection {
     return maxIndex;
   }
 
+  startRecognition() {
+    // Actually, recognition is always on, but found classes are not broadcasted until startRecognition is called
+    this.broadcastEvents = true;
+  }
+
+  stopRecognition() {
+    this.broadCastEvents = false;
+  }
+
   setConfidences(confidences) {
     const confidencesArry = Object.values(confidences);
     let maxIndex = this.getMaxIndex(confidencesArry);
@@ -185,9 +194,12 @@ class LearningSection {
     // if (maxValue > 0.5 && this.currentIndex !== maxIndex) {
     if (maxValue > 0.5) {
       this.currentIndex = maxIndex;
-      let id = GLOBALS.classNames[this.currentIndex];
+      const id = GLOBALS.classNames[this.currentIndex];
       this.ledOn(id);
-      GLOBALS.outputSection.trigger(id);
+      if (this.broadcastEvents) {
+        const event = new CustomEvent('class-triggered', { detail: { id: id } });
+        window.dispatchEvent(event);
+      }
     }
 
     for (let index = 0; index < 3; index += 1) {
