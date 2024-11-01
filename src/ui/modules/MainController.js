@@ -300,6 +300,8 @@ class MainController {
   showCountDown(currentValue, maxValue, text) {
     this.setText("");
     this.progressContainer.classList.remove("hidden");
+    this.progressContainer.classList.toggle("full", currentValue <= 0);
+
     const percentage = 100 * (maxValue - currentValue) / maxValue;
     this.progressBar.style.width = percentage + '%';
 
@@ -392,8 +394,6 @@ class MainController {
 
   classTriggered(event) {
     const id = event.detail.id;
-    console.log(`Class ${id} was triggered`);
-
     this.highlightTriggeredClass(id);
 
     /*
